@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "jquery": "^3.6.3",
+    "jsonwebtoken": "^9.0.0",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.9.0"
+  }
+}
