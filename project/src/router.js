@@ -29,5 +29,16 @@ export default new Router({
       name: "usercenter",
       component: () => import("./views/UserCenter/Usercenter.vue"),
     },
+    {
+      path: "/detail",
+      name: "detail",
+      component: () => import("./views/Detail/detail.vue"),
+      children: [
+        {
+          path: "*",
+          component: () => import("./views/Detail/detail.vue"),
+        },
+      ],
+    },
   ],
 });

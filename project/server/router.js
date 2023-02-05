@@ -42,4 +42,7 @@ router.get("/user/info/search", (req, res, next) => {
 router.get("/class/get", (req, res, next) => {
   api.loadClass(req, res, next);
 });
+router.get("/class/play/count", (req, res, next) => {
+  api.updateClassPlayCount(req, res, next);
+});
 module.exports = router;

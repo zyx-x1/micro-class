@@ -10,10 +10,10 @@
       </div>
     </div>
     <div id="recommend">
-      <div id="foto-main">
-        <div class="foto-box" v-for="(item, i) in data" :key="i">
+      <div id="mclass-main">
+        <div class="mclass-box" v-for="(item, i) in data" :key="i">
           <div class="c-titleimg">
-            <img :src="item.cover_image" alt="" />
+            <img :src="item.cover_image" alt="" @click="toDetail(item.id)" />
           </div>
           <div class="c-titlecon">
             <h3 class="c-title" :title="item.title">
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { formatTime } from "../../utils/index";
 export default {
   data() {
     return {
@@ -58,7 +59,13 @@ export default {
           curr_page: 0,
         },
       });
-      this.data = res.data.data;
+      this.data = res.data.data.map((el) => {
+        el.upload_time = formatTime(el.upload_time);
+        return el;
+      });
+    },
+    toDetail(id) {
+      this.$router.push(`/detail/${id}`);
     },
   },
   created() {
@@ -92,7 +99,7 @@ export default {
     background-color: #d3dce6;
   }
 }
-#foto-main {
+#mclass-main {
   width: 90%;
   margin: 0 auto;
   min-height: 400px;
@@ -103,7 +110,7 @@ export default {
   align-items: flex-start;
   justify-content: space-evenly;
 }
-.foto-box {
+.mclass-box {
   background-color: #fff;
   width: 20%;
   height: 220px;
@@ -115,7 +122,7 @@ export default {
   margin-bottom: 20px;
   border-radius: 15px;
 }
-.foto-box:hover {
+.mclass-box:hover {
   //   border: 1px solid transparent;
   box-shadow: 0px 0px 10px 3px rgba(56, 56, 56, 0.788);
 }

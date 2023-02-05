@@ -1,0 +1,226 @@
+<template>
+  <div id="root">
+    <div id="play">
+      <div class="left">
+        <div id="play-title">
+          <div class="title">{{ this.classData.title }}</div>
+          <div class="title-info">
+            <span class="play-count"
+              ><i class="el-icon-video-play"></i>
+              {{ this.classData.play_count }}
+            </span>
+            <span class="comment-count">
+              <i class="el-icon-chat-line-square"></i>
+              {{ this.data.length }}
+            </span>
+            <span class="date">
+              <i class="el-icon-time"></i>
+              {{ this.classData.upload_time }}
+            </span>
+          </div>
+        </div>
+        <div class="video">
+          <video
+            id="play_container"
+            :src="this.classData.video_src"
+            controls="controls"
+            width="60%"
+          ></video>
+        </div>
+        <div class="operation">
+          <div
+            class="like"
+            @mousemove="isLikeActive = true"
+            @mouseleave="isLikeActive = false"
+            @click="likeClass()"
+          >
+            <Like v-if="!isLikeActive" />
+            <LikeActive v-else />
+            <span class="like-count">{{ this.classData.like }}</span>
+          </div>
+          <div
+            class="collection"
+            @mousemove="isCollectionActive = true"
+            @mouseleave="isCollectionActive = false"
+            @click="collectionClass()"
+          >
+            <Collection v-if="!isCollectionActive" />
+            <CollectionActive v-else />
+            <span class="collection-count">{{
+              this.classData.collection
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="foot"></div>
+  </div>
+</template>
+
+<script>
+import { formatTime } from "../../utils/index";
+
+import Like from "../../components/icons/like";
+import LikeActive from "../../components/icons/like_active";
+import Collection from "../../components/icons/collection";
+import CollectionActive from "../../components/icons/collection_active";
+export default {
+  components: { Like, LikeActive, Collection, CollectionActive },
+  data() {
+    return {
+      baseUrl: this.$store.state.baseUrl,
+      classId: -1,
+      classData: {},
+      data: [],
+      isLikeActive: false,
+      isCollectionActive: false,
+    };
+  },
+  methods: {
+    getClassId() {
+      let res;
+      res = location.hash.replace("#/detail/", "");
+      res = parseInt(res);
+      return res;
+    },
+    async getMicroClass(id) {
+      let res = await this.axios.get(`${this.baseUrl}/class/get`, {
+        params: {
+          id: id,
+        },
+      });
+      this.classData = res.data.data[0];
+      this.data = res.data.data;
+      this.classData.upload_time = formatTime(this.classData.upload_time);
+      this.classData.play_count = !!this.classData.play_count
+        ? parseInt(this.classData.play_count)
+        : 0;
+      this.classData.like = !!this.classData.like
+        ? parseInt(this.classData.like)
+        : 0;
+      this.classData.collection = !!this.classData.collection
+        ? parseInt(this.classData.collection)
+        : 0;
+      this.increasePlayCount();
+    },
+    async increasePlayCount() {
+      // 进入页面时增加微课播放次数
+      let nowPlayCount = this.classData.play_count;
+      console.log("this.classData.play_count ->", nowPlayCount);
+      let res = await this.axios.get(`${this.baseUrl}/class/play/count`, {
+        params: {
+          id: this.id,
+          count: nowPlayCount + 1,
+        },
+      });
+      this.classData.play_count = res.data.count.play_count;
+    },
+    likeClass() {
+      let loginStatus = this.$store.state.loginCredentials.status;
+      if (!loginStatus) {
+        this.unlogin();
+      }
+    },
+    collectionClass() {
+      let loginStatus = this.$store.state.loginCredentials.status;
+      if (!loginStatus) {
+        this.unlogin();
+      }
+    },
+    unlogin() {
+      this.$confirm("当前处于未登录状态, 是否前往登录?", "提示", {
+        confirmButtonText: "登录",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.$router.push("/login");
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消",
+          });
+        });
+    },
+    open() {},
+  },
+  created() {
+    this.id = this.getClassId();
+    if (!!this.id) {
+      this.getMicroClass(this.id);
+    }
+  },
+};
+</script>
+
+<style lang="less" scoped>
+#root {
+  margin-top: 100px;
+  #play {
+    width: 70%;
+    margin: 0 auto;
+    .left {
+      width: 60%;
+      #play-title {
+        width: 100%;
+        font-size: 28px;
+        // font-weight: bold;
+        margin-bottom: 10px;
+        text-align: left;
+      }
+      .video {
+        height: 500px;
+      }
+      #play_container {
+        width: 100%;
+        height: 500px;
+        float: left;
+        box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+      }
+      .title-info {
+        user-select: none;
+        .play-count,
+        .comment-count,
+        .date {
+          font-size: 15px;
+          margin-right: 20px;
+          color: rgba(0, 0, 0, 0.5);
+        }
+      }
+      .operation {
+        width: 100%;
+        height: 50px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        .like,
+        .collection {
+          cursor: pointer;
+          line-height: 30px;
+          margin-right: 30px;
+          &:hover {
+            color: #1296db;
+          }
+        }
+        svg {
+          width: 30px;
+          height: 30px;
+          margin-right: 5px;
+        }
+        span {
+          font-size: 20px;
+          line-height: 30px;
+          position: relative;
+          top: -5px;
+        }
+      }
+    }
+  }
+  #foot {
+    height: 500px;
+  }
+}
+</style>

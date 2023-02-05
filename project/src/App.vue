@@ -34,7 +34,6 @@ export default {
         localStorage.setItem("loginCredentials", 0);
         return;
       }
-      console.log("res.data ->", res.data);
       this.$store.commit("setLoginCredentials", {
         status: true,
         username: res.data.user.username,
