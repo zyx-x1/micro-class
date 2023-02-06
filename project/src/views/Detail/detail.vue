@@ -103,7 +103,7 @@ export default {
     async increasePlayCount() {
       // 进入页面时增加微课播放次数
       let nowPlayCount = this.classData.play_count;
-      console.log("this.classData.play_count ->", nowPlayCount);
+      console.log("this.classData.play_count1 ->", nowPlayCount);
       let res = await this.axios.get(`${this.baseUrl}/class/play/count`, {
         params: {
           id: this.id,
