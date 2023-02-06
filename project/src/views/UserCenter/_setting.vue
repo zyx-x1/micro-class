@@ -1,9 +1,7 @@
 <template>
   <div id="userdata">
     <div class="userdata-item">
-      <h3>
-        {{ isCn ? "用户名" : "User name" }}
-      </h3>
+      <h3>用户名</h3>
       <el-input v-model="newName" clearable></el-input>
       <span
         style="
@@ -27,7 +25,7 @@
           border-radius: 13px;
         "
       >
-        {{ isCn ? "保存" : "Save" }}
+        保存
       </button>
     </div>
     <div class="userdata-item">
@@ -59,7 +57,6 @@ export default {
   data() {
     let username = this.$store.state.loginCredentials.username;
     return {
-      //   isCn: window.localStorage.getItem("language") === "zh-cn",
       baseUrl: this.$store.state.baseUrl,
       isCn: true,
       username,

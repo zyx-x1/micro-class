@@ -83,24 +83,21 @@ export default {
       res = parseInt(res);
       return res;
     },
+    isNum(param) {
+      return !!param ? parseInt(param) : 0;
+    },
     async getMicroClass(id) {
       let res = await this.axios.get(`${this.baseUrl}/class/get`, {
         params: {
-          id: id,
+          id,
         },
       });
       this.classData = res.data.data[0];
       this.data = res.data.data;
       this.classData.upload_time = formatTime(this.classData.upload_time);
-      this.classData.play_count = !!this.classData.play_count
-        ? parseInt(this.classData.play_count)
-        : 0;
-      this.classData.like = !!this.classData.like
-        ? parseInt(this.classData.like)
-        : 0;
-      this.classData.collection = !!this.classData.collection
-        ? parseInt(this.classData.collection)
-        : 0;
+      this.classData.play_count = this.isNum(this.classData.play_count);
+      this.classData.like = this.isNum(this.classData.like);
+      this.classData.collection = this.isNum(this.classData.collection);
       this.increasePlayCount();
     },
     async increasePlayCount() {
