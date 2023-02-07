@@ -112,6 +112,15 @@ export default {
       });
       this.classData.play_count = res.data.count.play_count;
     },
+    async getLCCount() {
+      // 获取此微课的点赞数和收藏数
+      let res = await this.axios.get(`${this.baseUrl}/class/like_collection`, {
+        params: {
+          id: this.classId,
+        },
+      });
+      console.log(res);
+    },
     likeClass() {
       let loginStatus = this.$store.state.loginCredentials.status;
       if (!loginStatus) {
