@@ -42,12 +42,18 @@ router.get("/user/info/search", (req, res, next) => {
 });
 
 router.get("/class/get", (req, res, next) => {
-  api.loadClass(req, res, next);
+  classApi.loadClass(req, res, next);
 });
 router.get("/class/play/count", (req, res, next) => {
-  api.updateClassPlayCount(req, res, next);
+  classApi.updateClassPlayCount(req, res, next);
 });
 router.get("/class/like_collection", (req, res, next) => {
   classApi.getClassLikeCollection(req, res, next);
+});
+router.get("/class/like", (req, res, next) => {
+  classApi.likeClass(req, res, next);
+});
+router.get("/class/collection", (req, res, next) => {
+  classApi.collectionClass(req, res, next);
 });
 module.exports = router;

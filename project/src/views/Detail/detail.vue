@@ -34,9 +34,12 @@
             @mouseleave="isLikeActive = false"
             @click="likeClass()"
           >
-            <Like v-if="!isLikeActive" />
-            <LikeActive v-else />
-            <span class="like-count">{{ this.classData.like }}</span>
+            <LikeActive v-if="isLikeActive || isUserLike" />
+            <Like v-else />
+            <span class="like-count-active" v-if="isLikeActive || isUserLike">{{
+              this.likeCount
+            }}</span>
+            <span class="like-count" v-else>{{ this.likeCount }}</span>
           </div>
           <div
             class="collection"
@@ -44,10 +47,15 @@
             @mouseleave="isCollectionActive = false"
             @click="collectionClass()"
           >
-            <Collection v-if="!isCollectionActive" />
-            <CollectionActive v-else />
-            <span class="collection-count">{{
-              this.classData.collection
+            <CollectionActive v-if="isCollectionActive || isUserCollection" />
+            <Collection v-else />
+            <span
+              class="collection-count-active"
+              v-if="isCollectionActive || isUserCollection"
+              >{{ this.collectionCount }}</span
+            >
+            <span class="collection-count" v-else>{{
+              this.collectionCount
             }}</span>
           </div>
         </div>
@@ -74,6 +82,10 @@ export default {
       data: [],
       isLikeActive: false,
       isCollectionActive: false,
+      isUserLike: false,
+      isUserCollection: false,
+      likeCount: 0,
+      collectionCount: 0,
     };
   },
   methods: {
@@ -81,7 +93,8 @@ export default {
       let res;
       res = location.hash.replace("#/detail/", "");
       res = parseInt(res);
-      return res;
+      this.classId = res;
+      console.log(this.classId);
     },
     isNum(param) {
       return !!param ? parseInt(param) : 0;
@@ -99,6 +112,7 @@ export default {
       this.classData.like = this.isNum(this.classData.like);
       this.classData.collection = this.isNum(this.classData.collection);
       this.increasePlayCount();
+      this.getLCCount(id);
     },
     async increasePlayCount() {
       // 进入页面时增加微课播放次数
@@ -112,26 +126,48 @@ export default {
       });
       this.classData.play_count = res.data.count.play_count;
     },
-    async getLCCount() {
+    async getLCCount(id) {
       // 获取此微课的点赞数和收藏数
       let res = await this.axios.get(`${this.baseUrl}/class/like_collection`, {
         params: {
-          id: this.classId,
+          id,
+          email: this.$store.state.loginCredentials.email,
         },
       });
-      console.log(res);
+      this.isUserLike = res.data.data.is_user_like;
+      this.isUserCollection = res.data.data.is_user_collection;
+      this.likeCount = res.data.data.like_count;
+      this.collectionCount = res.data.data.collection_count;
     },
-    likeClass() {
+    async likeClass() {
       let loginStatus = this.$store.state.loginCredentials.status;
       if (!loginStatus) {
         this.unlogin();
+        return;
       }
+      let res = await this.axios.get(`${this.baseUrl}/class/like`, {
+        params: {
+          id: this.classId,
+          email: this.$store.state.loginCredentials.email,
+          isUserLike: !this.isUserLike,
+        },
+      });
+      if (res.data.status == "success") this.getLCCount(this.classId);
     },
-    collectionClass() {
+    async collectionClass() {
       let loginStatus = this.$store.state.loginCredentials.status;
       if (!loginStatus) {
         this.unlogin();
+        return;
       }
+      let res = await this.axios.get(`${this.baseUrl}/class/collection`, {
+        params: {
+          id: this.classId,
+          email: this.$store.state.loginCredentials.email,
+          isUserCollection: !this.isUserCollection,
+        },
+      });
+      if (res.data.status == "success") this.getLCCount(this.classId);
     },
     unlogin() {
       this.$confirm("当前处于未登录状态, 是否前往登录?", "提示", {
@@ -151,10 +187,10 @@ export default {
     },
     open() {},
   },
-  created() {
-    this.id = this.getClassId();
-    if (!!this.id) {
-      this.getMicroClass(this.id);
+  mounted() {
+    this.getClassId();
+    if (!!this.classId) {
+      this.getMicroClass(this.classId);
     }
   },
 };
@@ -228,5 +264,11 @@ export default {
   #foot {
     height: 500px;
   }
+}
+.like-count-active {
+  color: #1296db;
+}
+.collection-count-active {
+  color: #1296db;
 }
 </style>
