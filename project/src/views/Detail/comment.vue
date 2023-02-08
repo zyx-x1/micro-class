@@ -77,7 +77,7 @@
               <div class="reply-inner">
                 <el-input
                   :placeholder="'回复 ' + responder.responder_name"
-                  v-model="reply_in"
+                  v-model="responder.content"
                   clearable
                 >
                 </el-input>
@@ -111,13 +111,14 @@ export default {
       baseUrl: this.$store.state.baseUrl,
       comments: [],
       commentCount: 0,
-      reply_in: "",
       isReply: false,
       responder: {
-        superioi_id: -1,
         replied_email: "",
         responder_name: "",
+        content: "",
+        superioi_id: -1,
       },
+      ws: null,
     };
   },
   methods: {
@@ -143,19 +144,40 @@ export default {
     reply(superioi_id, replied_email, responder_name) {
       this.isReply = !this.isReply;
       this.responder = {
-        superioi_id,
         replied_email,
         responder_name,
+        content: this.responder.content,
+        superioi_id,
       };
     },
-    submitComment() {
-      if (!this.reply_in) this.$message.error("未输入回复内容！");
+    async submitComment() {
+      if (!this.responder.content) this.$message.error("未输入回复内容！");
+      let res = await this.axios.get(`${this.baseUrl}/comment/set`, {
+        params: {
+          initiator_email: this.$store.state.loginCredentials.email,
+          replied_email: this.responder.replied_email,
+          content: this.responder.content,
+          class_id: this.classId,
+          superioi_id: this.responder.superioi_id,
+        },
+      });
     },
   },
   created() {
     this.getComments();
   },
-  mounted() {},
+  mounted() {
+    let _this = this;
+    const ws = new WebSocket("ws://localhost:8181");
+    ws.onopen = function () {
+      ws.onmessage = function (msg) {
+        console.log("ws message ->", msg);
+        if (msg.data == "comment update") {
+          _this.getComments();
+        }
+      };
+    };
+  },
 };
 </script>
 
