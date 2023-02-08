@@ -59,6 +59,19 @@
             }}</span>
           </div>
         </div>
+        <!-- 标签 -->
+        <div class="tags">
+          <span
+            class="tag"
+            v-for="(item, index) in this.classData.knowledge_information.split(
+              '|'
+            )"
+            :key="index"
+            >{{ item }}</span
+          >
+        </div>
+        <!-- 评论 -->
+        <Comment :classId="this.classId" />
       </div>
     </div>
     <div id="foot"></div>
@@ -72,8 +85,11 @@ import Like from "../../components/icons/like";
 import LikeActive from "../../components/icons/like_active";
 import Collection from "../../components/icons/collection";
 import CollectionActive from "../../components/icons/collection_active";
+
+import Comment from "./comment.vue";
 export default {
-  components: { Like, LikeActive, Collection, CollectionActive },
+  name: "detail",
+  components: { Like, LikeActive, Collection, CollectionActive, Comment },
   data() {
     return {
       baseUrl: this.$store.state.baseUrl,
@@ -94,7 +110,6 @@ export default {
       res = location.hash.replace("#/detail/", "");
       res = parseInt(res);
       this.classId = res;
-      console.log(this.classId);
     },
     isNum(param) {
       return !!param ? parseInt(param) : 0;
@@ -257,6 +272,18 @@ export default {
           line-height: 30px;
           position: relative;
           top: -5px;
+        }
+      }
+      .tags {
+        width: 100%;
+        display: flex;
+        .tag {
+          background-color: #f1f2f3;
+          margin: 5px;
+          padding: 4px 8px;
+          border-radius: 20px;
+          user-select: none;
+          cursor: pointer;
         }
       }
     }

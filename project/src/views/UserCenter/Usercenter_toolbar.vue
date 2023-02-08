@@ -14,7 +14,7 @@
           ><MyCollection v-if="activeName == 'my_collection'"
         /></el-tab-pane>
         <el-tab-pane label="设置" name="setting">
-          <span slot="label"> <i class="el-icon-setting"></i> 设置</span
+          <span slot="label"> <i class="el-icon-setting"></i> 个人资料</span
           ><Setting v-if="activeName == 'setting'"
         /></el-tab-pane> </el-tabs
       ><el-input

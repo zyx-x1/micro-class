@@ -17,11 +17,9 @@
         class="submit-change"
         @click="submitUsernameChange()"
         style="
-          border: none;
-          color: #000;
           padding: 5px 30px;
           margin-left: 50px;
-          border: 1px solid #000;
+          cursor: pointer;
           border-radius: 13px;
         "
       >
@@ -169,8 +167,13 @@ export default {
     }
     .submit-change {
       background-color: #fff;
+      border: none;
+      color: rgba(0, 0, 0, 0.5);
+      border: 1px solid #fff;
+      transition: 0.5s;
       &:hover {
-        background-color: transparent !important;
+        color: #1296db;
+        border-color: #1296db;
       }
     }
   }

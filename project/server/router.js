@@ -3,6 +3,7 @@ const router = express.Router();
 const api = require("./apis/index");
 const userApi = require("./apis/user");
 const classApi = require("./apis/class");
+const commentApi = require("./apis/comment");
 
 router.get("/load", (req, res, next) => {
   userApi.loader(req, res, next);
@@ -55,5 +56,9 @@ router.get("/class/like", (req, res, next) => {
 });
 router.get("/class/collection", (req, res, next) => {
   classApi.collectionClass(req, res, next);
+});
+
+router.get("/comment/get", (req, res, next) => {
+  commentApi.getComment(req, res, next);
 });
 module.exports = router;
