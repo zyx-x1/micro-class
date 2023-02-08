@@ -61,4 +61,7 @@ router.get("/class/collection", (req, res, next) => {
 router.get("/comment/get", (req, res, next) => {
   commentApi.getComment(req, res, next);
 });
+router.get("/comment/set", (req, res, next) => {
+  commentApi.setComment(req, res, next);
+});
 module.exports = router;
