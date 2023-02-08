@@ -3,11 +3,10 @@ const path = require("path");
 const app = express();
 const bodyParser = require("body-parser");
 const port = 3000;
+const wsPort = 8181;
 const router = require("./router");
 const { db } = require("./db/db.js");
-
-app.use("/static", express.static(__dirname + "/static"));
-
+const { server } = require("./ws");
 // 允许请求头中所有字段的传输
 app.all("*", (req, res, next) => {
   req.header("Access-Control-Allow-Origin", "*");
@@ -17,13 +16,9 @@ app.all("*", (req, res, next) => {
 
 app.use("/", router);
 
-// db("select * from user")
-//   .then((val) => {
-//     console.log();
-//   })
-//   .catch((e) => {
-//     console.log(e);
-//   });
+server.listen(wsPort, function () {
+  console.log("WebScoket is running at ws://localhost:8181");
+});
 
 const dealTime = () => {
   let result, hour, minute, second;
