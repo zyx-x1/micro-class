@@ -1,5 +1,6 @@
 const { sqlMap } = require("../db/sqlMap");
 const { db } = require("../db/db.js");
+const { wss } = require("../ws");
 module.exports = {
   async getComment(req, res, next) {
     let { classId } = req.query;
@@ -44,6 +45,23 @@ module.exports = {
           data: superiorComments,
         });
       }
+    });
+  },
+  async setComment(req, res, next) {
+    let { initiator_email, replied_email, content, class_id, superioi_id } =
+      req.query;
+    let inertData = [
+      initiator_email,
+      replied_email,
+      new Date(),
+      content,
+      parseInt(class_id),
+      parseInt(superioi_id),
+    ];
+    let sql = `insert into comment (initiator_email,replied_email,date,content,class_id,superior_id) values (?,?,?,?,?,?)`;
+    let result = await db(sql, inertData);
+    wss.clients.forEach((ws) => {
+      ws.send("comment update");
     });
   },
 };
