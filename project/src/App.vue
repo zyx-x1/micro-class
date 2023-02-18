@@ -45,7 +45,6 @@ export default {
     },
   },
   created() {
-    console.log("执行checkToken");
     this.checkLogin();
   },
 };

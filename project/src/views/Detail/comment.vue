@@ -297,13 +297,13 @@ export default {
         message: "回复成功！",
       });
     },
-     deleteComment(type, index, subIndex) {
+    deleteComment(type, index, subIndex) {
       this.$confirm(`删除后将不可恢复，您确定要删除此${type}吗?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(async() => {
+        .then(async () => {
           let comment_id;
           switch (type) {
             case "评论":
