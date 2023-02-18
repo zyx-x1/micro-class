@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="nav">
     <div class="nav">
       <ul class="nav-items">
         <el-input
@@ -7,8 +7,9 @@
           placeholder="请输入关键字"
           clearable
           size="small"
-          suffix-icon="el-icon-search"
+          prefix-icon="el-icon-search"
           style="width: 200px"
+          @keyup.enter.native="search()"
         ></el-input>
         <li class="item-common">
           <router-link to="/" @mouseover="showUserOptions = true">
@@ -123,6 +124,9 @@ export default {
       //   location.reload();
       // }, 500);
     },
+    search() {
+      this.$router.push(`/search?search_txt=${this.searchText}`);
+    },
   },
   mounted() {
     this.checkStateLoginCredentials();
@@ -130,8 +134,8 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-#root {
+<style lang="less">
+#nav {
   height: 50px;
   position: fixed;
   top: 0;
@@ -201,13 +205,19 @@ export default {
       }
     }
   }
-}
-#nav {
-  a {
-    text-decoration: none;
+  #nav {
+    a {
+      text-decoration: none;
+    }
+    a.router-link-exact-active {
+      color: #2c3e50;
+    }
   }
-  a.router-link-exact-active {
-    color: #2c3e50;
+  .el-input__prefix {
+    height: 40px !important;
+    .el-input__icon el-icon-search {
+      height: 40px !important;
+    }
   }
 }
 </style>

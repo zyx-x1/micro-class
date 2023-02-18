@@ -4,7 +4,7 @@ const api = require("./apis/index");
 const userApi = require("./apis/user");
 const classApi = require("./apis/class");
 const commentApi = require("./apis/comment");
-
+// 用户
 router.get("/load", (req, res, next) => {
   userApi.loader(req, res, next);
 });
@@ -41,7 +41,7 @@ router.get("/email", (req, res, next) => {
 router.get("/user/info/search", (req, res, next) => {
   userApi.getUserInfoForName(req, res, next);
 });
-
+// 微课
 router.get("/class/get", (req, res, next) => {
   classApi.loadClass(req, res, next);
 });
@@ -57,7 +57,10 @@ router.get("/class/like", (req, res, next) => {
 router.get("/class/collection", (req, res, next) => {
   classApi.collectionClass(req, res, next);
 });
-
+router.get("/class/search", (req, res, next) => {
+  classApi.searchClass(req, res, next);
+});
+// 评论
 router.get("/comment/get", (req, res, next) => {
   commentApi.getComment(req, res, next);
 });

@@ -75,4 +75,19 @@ module.exports = {
       status: "success",
     });
   },
+  async searchClass(req, res, next) {
+    let { key, page_size, curr_page } = req.query
+    let sql = `select * from micro_class where title like ?`
+    let params = [`%${decodeURI(key)}%`]
+    let result = await db(sql, params)
+    let total = result.length
+    let finalResult = []
+    let end = (curr_page + 1) * page_size > total ? total : (curr_page + 1) * page_size
+    finalResult = total > page_size ? result.slice(curr_page * page_size, end) : result
+    return res.json({
+      status: "success",
+      data: finalResult,
+      total
+    });
+  }
 };
