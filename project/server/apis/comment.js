@@ -50,18 +50,31 @@ module.exports = {
   async setComment(req, res, next) {
     let { initiator_email, replied_email, content, class_id, superioi_id } =
       req.query;
+    replied_email = replied_email == undefined ? null : replied_email
+    superioi_id = isNaN(parseInt(superioi_id)) ? null : parseInt(superioi_id)
     let inertData = [
       initiator_email,
       replied_email,
       new Date(),
       content,
       parseInt(class_id),
-      parseInt(superioi_id),
+      superioi_id,
     ];
     let sql = `insert into comment (initiator_email,replied_email,date,content,class_id,superior_id) values (?,?,?,?,?,?)`;
     let result = await db(sql, inertData);
     wss.clients.forEach((ws) => {
       ws.send("comment update");
     });
+    return res.json({
+      status: "success",
+    });
   },
+  async deleteComment(req, res, next) {
+    let { comment_id } = req.query
+    let sql = `delete from comment where comment_id=?`
+    let result = await db(sql, [comment_id])
+    return res.json({
+      status: "success",
+    });
+  }
 };

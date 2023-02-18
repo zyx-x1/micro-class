@@ -64,4 +64,7 @@ router.get("/comment/get", (req, res, next) => {
 router.get("/comment/set", (req, res, next) => {
   commentApi.setComment(req, res, next);
 });
+router.get("/comment/delete", (req, res, next) => {
+  commentApi.deleteComment(req, res, next);
+});
 module.exports = router;
