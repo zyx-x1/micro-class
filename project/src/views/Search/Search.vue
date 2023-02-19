@@ -1,6 +1,11 @@
 <template>
   <div id="search-result">
-    <div class="items">
+    <div class="empty" v-if="result.length == 0">
+      <el-empty
+        description="没有包含此关键字的微课，请换个关键字再来搜索吧~"
+      ></el-empty>
+    </div>
+    <div class="items" v-else>
       <el-card class="item" v-for="(v, i) in result" :key="i" shadow="hover">
         <div class="content" @click="toDetail(v.id)">
           <div class="left">
@@ -37,18 +42,18 @@
           </div>
         </div>
       </el-card>
-    </div>
-    <div class="page">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="result.length"
-      >
-      </el-pagination>
+      <div class="page">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="result.length"
+        >
+        </el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -94,6 +99,7 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/detail/${id}`);
+      location.reload();
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -109,6 +115,11 @@ export default {
   mounted() {
     this.getSearchResults();
   },
+  watch: {
+    $route() {
+      this.getSearchResults();
+    },
+  },
 };
 </script>
 
@@ -120,7 +131,8 @@ export default {
     margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    align-items: flex-start;
     .item {
       width: 45%;
       margin: 20px 0;
@@ -187,6 +199,7 @@ export default {
     }
   }
   .page {
+    width: 100%;
     margin-bottom: 50px;
   }
 }

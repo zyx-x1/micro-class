@@ -67,6 +67,7 @@
               '|'
             )"
             :key="index"
+            @click="tagSearch(item)"
             >{{ item }}</span
           >
         </div>
@@ -192,6 +193,7 @@ export default {
       })
         .then(() => {
           this.$router.push("/login");
+          location.reload();
         })
         .catch(() => {
           this.$message({
@@ -201,6 +203,10 @@ export default {
         });
     },
     open() {},
+    tagSearch(tag) {
+      this.$router.push(`/search?search_txt=${tag}`);
+      location.reload();
+    },
   },
   mounted() {
     this.getClassId();

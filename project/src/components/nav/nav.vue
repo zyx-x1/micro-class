@@ -9,7 +9,7 @@
           size="small"
           prefix-icon="el-icon-search"
           style="width: 200px"
-          @keyup.enter.native="search()"
+          @keyup.enter.native="search"
         ></el-input>
         <li class="item-common">
           <router-link to="/" @mouseover="showUserOptions = true">
@@ -120,12 +120,11 @@ export default {
         message: "注销成功！",
       });
       this.$router.push("/");
-      // setTimeout(() => {
-      //   location.reload();
-      // }, 500);
+      location.reload();
     },
     search() {
       this.$router.push(`/search?search_txt=${this.searchText}`);
+      // location.reload();
     },
   },
   mounted() {

@@ -131,7 +131,7 @@ export default {
             
             setTimeout(() => {
               this.$router.push("/");
-              // location.reload();
+              location.reload();
             }, 1500);
           }
         }
