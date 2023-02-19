@@ -24,7 +24,6 @@
             id="play_container"
             :src="this.classData.video_src"
             controls="controls"
-            width="60%"
           ></video>
         </div>
         <div class="operation">
@@ -74,6 +73,24 @@
         <!-- 评论 -->
         <Comment :classId="this.classId" />
       </div>
+      <div class="right">
+        <div class="title">推荐相关微课</div>
+        <div class="items">
+          <div class="item" v-for="(v, i) in associatedClasses" :key="i">
+            <div class="cover">
+              <img :src="v.cover_image" alt="" srcset="" />
+            </div>
+            <div class="info">
+              <div class="class-title">
+                {{ v.title }}
+              </div>
+              <div class="author">
+                {{ v.author_name }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div id="foot"></div>
   </div>
@@ -103,6 +120,7 @@ export default {
       isUserCollection: false,
       likeCount: 0,
       collectionCount: 0,
+      associatedClasses: [],
     };
   },
   methods: {
@@ -129,11 +147,12 @@ export default {
       this.classData.collection = this.isNum(this.classData.collection);
       this.increasePlayCount();
       this.getLCCount(id);
+      this.getAssociatedClass();
     },
     async increasePlayCount() {
       // 进入页面时增加微课播放次数
       let nowPlayCount = this.classData.play_count;
-      console.log("this.classData.play_count1 ->", nowPlayCount);
+      console.log("this.classData.play_count ->", nowPlayCount);
       let res = await this.axios.get(`${this.baseUrl}/class/play/count`, {
         params: {
           id: this.id,
@@ -207,6 +226,18 @@ export default {
       this.$router.push(`/search?search_txt=${tag}`);
       location.reload();
     },
+    // 获取相关视频
+    async getAssociatedClass() {
+      let res = await this.axios.get(`${this.baseUrl}/class/associated/get`, {
+        params: {
+          knowledge_information: this.classData.knowledge_information,
+        },
+      });
+      // console.log(`res ->`, res);
+      if (res.data.status == "success") {
+        this.associatedClasses = res.data.data;
+      }
+    },
   },
   mounted() {
     this.getClassId();
@@ -221,8 +252,10 @@ export default {
 #root {
   margin-top: 100px;
   #play {
-    width: 70%;
+    width: 80%;
     margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
     .left {
       width: 60%;
       #play-title {
@@ -233,11 +266,11 @@ export default {
         text-align: left;
       }
       .video {
-        height: 500px;
+        height: 50vh;
       }
       #play_container {
         width: 100%;
-        height: 500px;
+        height: 50vh;
         float: left;
         box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
       }
@@ -283,6 +316,7 @@ export default {
       .tags {
         width: 100%;
         display: flex;
+        margin: 10px 0;
         .tag {
           background-color: #f1f2f3;
           margin: 5px;
@@ -290,6 +324,58 @@ export default {
           border-radius: 20px;
           user-select: none;
           cursor: pointer;
+        }
+      }
+    }
+    .right {
+      width: 30%;
+      margin-top: 75px;
+      .title {
+        background-color: rgba(0, 0, 0, 0.1);
+        text-align: left;
+        text-indent: 2em;
+        padding: 10px;
+        border-radius: 10px;
+        height: 30px;
+        line-height: 30px;
+      }
+      .items {
+        .item {
+          margin: 40px 0;
+          display: flex;
+          .cover {
+            width: 50%;
+            height: 150px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            &:hover img {
+              transform: scale(1.2) translate(-40%, -40%);
+            }
+            img {
+              width: 100%;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              transition: 0.5s;
+            }
+          }
+          .info {
+            width: 50%;
+            text-align: left;
+            padding: 0 20px;
+            .class-title {
+              font-weight: bold;
+              cursor: pointer;
+              &:hover {
+                color: #1296db;
+              }
+            }
+            .author {
+              margin-top: 20px;
+            }
+          }
         }
       }
     }

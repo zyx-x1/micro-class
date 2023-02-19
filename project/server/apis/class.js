@@ -89,5 +89,25 @@ module.exports = {
       data: finalResult,
       total
     });
+  },
+  async getAssociatedClass(req, res, next) {
+    let { knowledge_information } = req.query
+    let tags = knowledge_information.split("|")
+    let sql = `select * from micro_class where knowledge_information like ?`
+    let result = []
+    tags.forEach(async (el, index) => {
+      let data = await db(sql, [`%${el}%`])
+      result.push(...data)
+      if (index == tags.length - 1) {
+        result = Array.from(new Set(result.map(item => JSON.stringify(item)))).map(item => JSON.parse(item))
+        result = result.length > 8 ? result.slice(0, 8) : result
+        return res.json({
+          status: "success",
+          data: result,
+          total: result.length
+        })
+      }
+    })
+
   }
 };

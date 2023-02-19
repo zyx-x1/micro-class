@@ -66,7 +66,7 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/detail/${id}`);
-      location.reload();
+      // location.reload();
     },
   },
   created() {
