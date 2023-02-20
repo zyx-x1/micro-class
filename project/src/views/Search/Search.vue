@@ -1,10 +1,12 @@
 <template>
   <div id="search-result">
+    <h3>当前查询关键字“{{ decodeURI(this.search_txt) }}”的结果</h3>
     <div class="empty" v-if="result.length == 0">
       <el-empty
         description="没有包含此关键字的微课，请换个关键字再来搜索吧~"
       ></el-empty>
     </div>
+
     <div class="items" v-else>
       <el-card class="item" v-for="(v, i) in result" :key="i" shadow="hover">
         <div class="content" @click="toDetail(v.id)">
@@ -78,6 +80,7 @@ export default {
         obj[el.split("=")[0]] = el.split("=")[1];
       });
       this.search_txt = obj.search_txt;
+      console.log(`this.search_txt`, decodeURI(this.search_txt));
     },
     async getSearchResults() {
       this.getQuery();
@@ -99,7 +102,6 @@ export default {
     },
     toDetail(id) {
       this.$router.push(`/detail/${id}`);
-      location.reload();
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
@@ -126,6 +128,9 @@ export default {
 <style lang="less" scoped>
 #search-result {
   margin-top: 150px;
+  h3{
+    margin-bottom: 20px;
+  }
   .items {
     width: 80%;
     margin: 0 auto;

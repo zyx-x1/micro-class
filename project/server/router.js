@@ -57,6 +57,9 @@ router.get("/class/like", (req, res, next) => {
 router.get("/class/collection", (req, res, next) => {
   classApi.collectionClass(req, res, next);
 });
+router.get("/class/collection/get", (req, res, next) => {
+  classApi.getCollections(req, res, next);
+});
 router.get("/class/search", (req, res, next) => {
   classApi.searchClass(req, res, next);
 });

@@ -35,7 +35,7 @@
         </li>
         <!-- 收藏 -->
         <li class="item-common">
-          <router-link to="/message">
+          <router-link to="/usercenter?view=my_collection">
             <i
               class="el-icon-collection-tag"
               style="position: relative; top: 1.5px"

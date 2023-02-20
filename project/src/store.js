@@ -20,7 +20,6 @@ export default new Vuex.Store({
     setLoginCredentials(state, loginCredentials) {
       state.loginCredentials = loginCredentials;
     },
-    // 动态canvas星空背景
     starAnimeBackground(state, canvasElement) {
       let canvas = canvasElement,
         ctx = canvas.getContext("2d"),

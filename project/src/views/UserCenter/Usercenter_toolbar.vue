@@ -19,10 +19,12 @@
         /></el-tab-pane> </el-tabs
       ><el-input
         v-model="searchText"
+        v-show="activeName == 'my_video' || activeName == 'my_collection'"
         placeholder="请输入内容"
         clearable
         size="small"
-        suffix-icon="el-icon-search"
+        prefix-icon="el-icon-search"
+        @keyup.enter.native="search()"
         style="
           position: absolute;
           top: 0px;
@@ -52,7 +54,24 @@ export default {
     handleClick(tab, event) {
       console.log(tab, event);
       console.log("activeName ->", this.activeName);
+      this.$router.push("/usercenter?view=" + this.activeName);
     },
+    checkHash() {
+      let hash = location.hash;
+      let search = hash.split("?")[1];
+      let searchParams = search.split("&");
+      let obj = {};
+      searchParams.forEach((el) => {
+        obj[el.split("=")[0]] = el.split("=")[1];
+      });
+      this.activeName = obj.view;
+    },
+    search(){
+      this.$router.push("/search?search_txt=" + this.searchText)
+    }
+  },
+  mounted() {
+    this.checkHash();
   },
 };
 </script>
