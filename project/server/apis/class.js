@@ -121,11 +121,9 @@ module.exports = {
   },
   async getCollections(req, res, next) {
     let { user_email } = req.query
-    console.log("user_email ->", user_email);
     let get_classid_sql = `select class_id from user_collection where user_email = ?`
     let classIdRes = await db(get_classid_sql, [user_email])
     let classIds = classIdRes.map(el => el.class_id)
-    console.log(`classIds`, classIds);
     let sql = `select * from micro_class where id in (${classIds.join(",")})`
     let data = await db(sql)
     return res.json({
