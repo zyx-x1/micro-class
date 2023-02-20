@@ -64,6 +64,10 @@ router.get("/class/search", (req, res, next) => {
 router.get("/class/associated/get", (req, res, next) => {
   classApi.getAssociatedClass(req, res, next);
 });
+
+router.get("/class/commend", (req, res, next) => {
+  classApi.getCommendClass(req, res, next);
+});
 // 评论
 router.get("/comment/get", (req, res, next) => {
   commentApi.getComment(req, res, next);

@@ -11,29 +11,32 @@
     </div>
     <div id="recommend">
       <div id="mclass-main">
-        <div class="mclass-box" v-for="(item, i) in data" :key="i">
-          <div class="c-titleimg">
-            <img :src="item.cover_image" alt="" @click="toDetail(item.id)" />
-          </div>
-          <div class="c-titlecon">
-            <h3 class="c-title" :title="item.title">
-              {{ item.title.substr(0, 20)
-              }}<span v-show="item.content_description.length > 20">...</span>
-            </h3>
-            <p class="c-intro" :title="item.content_description">
-              {{ item.content_description.substr(0, 18)
-              }}<span v-show="item.content_description.length > 18">...</span>
-            </p>
-            <div class="c-tbottom">
-              <div class="c-author">
-                <img
-                  :src="item.author_avatar"
-                  alt=""
-                  style="width: 30px; border-radius: 50%"
-                />
-                <div>{{ item.author_name }}</div>
+        <Commend />
+        <div class="mclass-boxs">
+          <div class="mclass-box" v-for="(item, i) in data" :key="i">
+            <div class="c-titleimg">
+              <img :src="item.cover_image" alt="" @click="toDetail(item.id)" />
+            </div>
+            <div class="c-titlecon">
+              <h3 class="c-title" :title="item.title">
+                {{ item.title.substr(0, 20)
+                }}<span v-show="item.content_description.length > 20">...</span>
+              </h3>
+              <p class="c-intro" :title="item.content_description">
+                {{ item.content_description.substr(0, 18)
+                }}<span v-show="item.content_description.length > 18">...</span>
+              </p>
+              <div class="c-tbottom">
+                <div class="c-author">
+                  <img
+                    :src="item.author_avatar"
+                    alt=""
+                    style="width: 30px; border-radius: 50%"
+                  />
+                  <div>{{ item.author_name }}</div>
+                </div>
+                <div class="c-date">{{ item.upload_time }}</div>
               </div>
-              <div class="c-date">{{ item.upload_time }}</div>
             </div>
           </div>
         </div>
@@ -44,7 +47,9 @@
 
 <script>
 import { formatTime } from "../../utils/index";
+import Commend from "./Commend.vue";
 export default {
+  components: { Commend },
   data() {
     return {
       data: [],
@@ -111,29 +116,43 @@ export default {
   align-items: flex-start;
   justify-content: space-evenly;
 }
-.mclass-box {
-  background-color: #fff;
-  width: 20%;
-  height: 220px;
+.mclass-boxs {
+  width: 100%;
   color: #000;
-  padding: 10px;
+
   display: flex;
-  flex-direction: column;
-  transition: all 0.5s;
-  margin-bottom: 20px;
-  border-radius: 15px;
+  flex-wrap: wrap;
+  // flex-direction: column;
+  justify-content: space-between;
+  .mclass-box {
+    width: 22%;
+    height: 250px;
+    background-color: #fff;
+    transition: all 0.5s;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    &:hover {
+      box-shadow: 0px 0px 10px 3px rgba(56, 56, 56, 0.788);
+    }
+  }
 }
-.mclass-box:hover {
-  //   border: 1px solid transparent;
-  box-shadow: 0px 0px 10px 3px rgba(56, 56, 56, 0.788);
-}
+
 .c-titleimg {
   width: 100%;
-  height: 120px;
+  height: 150px;
   cursor: pointer;
+  overflow: hidden;
   img {
     width: 100%;
     height: 100%;
+    transition: .5s;
+    &:hover {
+      transform: scale(1.2);
+    }
   }
 }
 .c-titleimg .c-titlecon {

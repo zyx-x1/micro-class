@@ -34,10 +34,26 @@ const migrationToMicroTable = (data) => {
   microClassKnowledgeInformation = dealTagArray(microClassKnowledgeInformation);
   microClassChapterInformation = dealTagArray(microClassChapterInformation);
   let videoCover = videoSrc.replace(".mp4", ".jpg");
-  console.log(videoCover);
   let insertSql =
     "insert into micro_class (video_src,title,author_avatar,author_name,author_identity,author_area,author_school,author_introduce,upload_time,knowledge_information,chapter_information,type,level,content_description,cover_image) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-  db(insertSql, [
+  console.log(``, [
+    videoSrc,
+    microClassTitle,
+    authorAvatar,
+    authorName,
+    authorIdentity,
+    authorArea,
+    authorSchool,
+    authorIntroduce,
+    microClassUploadTime,
+    microClassKnowledgeInformation,
+    microClassChapterInformation,
+    microClassType,
+    microClassLevel,
+    microClassContentDescription,
+    videoCover,
+  ]);
+    db(insertSql, [
     videoSrc,
     microClassTitle,
     authorAvatar,

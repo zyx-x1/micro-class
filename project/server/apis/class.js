@@ -109,5 +109,14 @@ module.exports = {
       }
     })
 
+  },
+  async getCommendClass(req, res, next) {
+    let sql = `select * from micro_class order by concat(collection,class_like,play_count) desc limit 0,10`
+    let result = await db(sql)
+    return res.json({
+      status: "success",
+      data: result,
+      total: result.length
+    })
   }
-};
+}   

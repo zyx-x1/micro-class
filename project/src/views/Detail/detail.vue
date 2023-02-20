@@ -1,7 +1,7 @@
 <template>
   <div id="root">
     <div id="play">
-      <div class="left">
+      <div class="left" ref="left">
         <div id="play-title">
           <div class="title">{{ this.classData.title }}</div>
           <div class="title-info">
@@ -62,9 +62,9 @@
         <div class="tags">
           <span
             class="tag"
-            v-for="(item, index) in this.classData.knowledge_information.split(
-              '|'
-            )"
+            v-for="(item, index) in !!this.classData.knowledge_information
+              ? this.classData.knowledge_information.split('|')
+              : []"
             :key="index"
             @click="tagSearch(item)"
             >{{ item }}</span
@@ -75,7 +75,7 @@
       </div>
       <div class="right">
         <div class="title">推荐相关微课</div>
-        <div class="items">
+        <div class="items" ref="right">
           <div class="item" v-for="(v, i) in associatedClasses" :key="i">
             <div class="cover">
               <img :src="v.cover_image" alt="" srcset="" />
@@ -155,7 +155,7 @@ export default {
       console.log("this.classData.play_count ->", nowPlayCount);
       let res = await this.axios.get(`${this.baseUrl}/class/play/count`, {
         params: {
-          id: this.id,
+          id: this.classId,
           count: nowPlayCount + 1,
         },
       });
@@ -238,12 +238,19 @@ export default {
         this.associatedClasses = res.data.data;
       }
     },
+    setRightHeight() {
+      let height = this.$refs.left.offsetHeight;
+      let right = this.$refs.right;
+      right.style.maxHeight = height + "px";
+      console.log(`height`, height);
+    },
   },
   mounted() {
     this.getClassId();
     if (!!this.classId) {
       this.getMicroClass(this.classId);
     }
+    this.setRightHeight();
   },
 };
 </script>
@@ -330,6 +337,7 @@ export default {
     .right {
       width: 30%;
       margin-top: 75px;
+      
       .title {
         background-color: rgba(0, 0, 0, 0.1);
         text-align: left;
@@ -339,7 +347,7 @@ export default {
         height: 30px;
         line-height: 30px;
       }
-      .items {
+      .items {overflow: scroll;
         .item {
           margin: 40px 0;
           display: flex;
