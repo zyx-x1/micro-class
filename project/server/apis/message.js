@@ -38,5 +38,26 @@ module.exports = {
             );
         });
         return true;
+    },
+    async getMessages(req, res, next) {
+        let { user } = req.query
+        let sql = `select * from message where receiver_email=? order by date desc`
+        let result = await db(sql, [user])
+        result.forEach(async (el, index) => {
+            let senderEamil = el.sender_email
+            let get_sender_sql = `select avatar,username from user where email='${senderEamil}'`
+            let sender = await db(get_sender_sql)
+            let get_class_title_sql = `select title from micro_class where id='${el.class_id}'`
+            let classTitle = await db(get_class_title_sql)
+            result[index]._sender = sender[0]
+            result[index]._class_title = classTitle[0].title
+            if (index == result.length - 1) {
+                return res.json({
+                    status: "success",
+                    data: result,
+                    total: result.length
+                })
+            }
+        })
     }
 }

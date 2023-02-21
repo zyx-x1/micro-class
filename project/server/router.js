@@ -86,4 +86,7 @@ router.get("/comment/delete", (req, res, next) => {
 router.get("/message/count", (req, res, next) => {
   messageApi.countMessage(req, res, next);
 })
+router.get("/message/get", (req, res, next) => {
+  messageApi.getMessages(req, res, next);
+})
 module.exports = router;

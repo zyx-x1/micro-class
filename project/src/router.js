@@ -49,6 +49,11 @@ export default new Router({
       path: "/search",
       name: "search",
       component: () => import("./views/Search/Search.vue")
+    },
+    {
+      path: "/message",
+      name: "message",
+      component: () => import("./views/Message/message.vue")
     }
   ],
 });
