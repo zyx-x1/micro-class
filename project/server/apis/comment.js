@@ -1,6 +1,7 @@
 const { sqlMap } = require("../db/sqlMap");
 const { db } = require("../db/db.js");
 const { wss } = require("../ws");
+const { sendMessage, deleteMessage } = require("./message")
 module.exports = {
   async getComment(req, res, next) {
     let { classId } = req.query;
@@ -62,8 +63,9 @@ module.exports = {
     ];
     let sql = `insert into comment (initiator_email,replied_email,date,content,class_id,superior_id) values (?,?,?,?,?,?)`;
     let result = await db(sql, inertData);
+    sendMessage({ commentId: result.insertId, senderEmail: initiator_email, receiverEmail: !!replied_email ? replied_email : "", classId: parseInt(class_id), type: "comment", content })
     wss.clients.forEach((ws) => {
-      ws.send("comment update");
+      ws.send(JSON.stringify({ msg: "comment update" }));
     });
     return res.json({
       status: "success",
@@ -73,6 +75,10 @@ module.exports = {
     let { comment_id } = req.query
     let sql = `delete from comment where comment_id=?`
     let result = await db(sql, [comment_id])
+    deleteMessage({ query: { commentId: comment_id } })
+    wss.clients.forEach((ws) => {
+      ws.send(JSON.stringify({ msg: "comment update" }));
+    });
     return res.json({
       status: "success",
     });

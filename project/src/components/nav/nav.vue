@@ -26,8 +26,9 @@
             ></i>
             消息
             <el-badge
-              :value="3"
+              :value="messageCount"
               class="item"
+              v-show="loginCredentials"
               :max="99"
               style="position: relative; left: -10px; top: -5px"
             ></el-badge>
@@ -90,10 +91,12 @@
 export default {
   data() {
     return {
+      baseUrl: this.$store.state.baseUrl,
       loginCredentials: this.$store.state.loginCredentials.status,
       avatar: this.$store.state.loginCredentials.avatar,
       showUserOptions: false,
       searchText: "",
+      messageCount: 0,
     };
   },
   methods: {
@@ -126,9 +129,36 @@ export default {
       this.$router.push(`/search?search_txt=${this.searchText}`);
       // location.reload();
     },
+    async getMessageCount() {
+      if (this.$store.state.loginCredentials.status) {
+        let res = await this.axios.get(`${this.baseUrl}/message/count`, {
+          params: {
+            user: this.$store.state.loginCredentials.email,
+          },
+        });
+        if (res.data.status == "success") {
+          this.messageCount = res.data.total;
+        }
+      }
+    },
   },
   mounted() {
     this.checkStateLoginCredentials();
+    setTimeout(() => {
+      this.getMessageCount();
+    }, 50);
+    const _this = this;
+    const ws = new WebSocket("ws://localhost:8181");
+    ws.onopen = function () {
+      ws.onmessage = function (msg) {
+        // msg = JSON.parse(msg);
+        let data = JSON.parse(msg.data);
+        console.log("ws message ->", msg);
+        if (data.msg == "message update") {
+          _this.getMessageCount();
+        }
+      };
+    };
   },
 };
 </script>

@@ -242,7 +242,6 @@ export default {
       let height = this.$refs.left.offsetHeight;
       let right = this.$refs.right;
       right.style.maxHeight = height + "px";
-      console.log(`height`, height);
     },
   },
   mounted() {
@@ -337,7 +336,7 @@ export default {
     .right {
       width: 30%;
       margin-top: 75px;
-      
+
       .title {
         background-color: rgba(0, 0, 0, 0.1);
         text-align: left;
@@ -347,7 +346,8 @@ export default {
         height: 30px;
         line-height: 30px;
       }
-      .items {overflow: scroll;
+      .items {
+        overflow: scroll;
         .item {
           margin: 40px 0;
           display: flex;

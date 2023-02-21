@@ -27,6 +27,7 @@ export default {
           token,
         },
       });
+      console.log(`APP res`, res);
       if (res.status == "fail") {
         this.$message.error(res.msg);
         localStorage.removeItem("token");
@@ -42,6 +43,10 @@ export default {
         usernameUpdateTime: res.data.user.username_updatetime,
         loginTime: new Date(),
       });
+      console.log(
+        `APP this.$store.state.loginCredentials`,
+        this.$store.state.loginCredentials
+      );
     },
   },
   created() {

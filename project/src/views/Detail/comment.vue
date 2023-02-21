@@ -194,7 +194,7 @@ import Like from "../../components/icons/comment_like.vue";
 import LikeActive from "../../components/icons/comment_like_active.vue";
 export default {
   name: "comment",
-  props: ["classId"],
+  // props: ["classId"],
   components: { Like, LikeActive },
   data() {
     return {
@@ -202,6 +202,7 @@ export default {
       comments: [],
       commentCount: 0,
       isReply: false,
+      classId: -1,
       responder: {
         replied_email: "",
         responder_name: "",
@@ -214,6 +215,7 @@ export default {
   },
   methods: {
     async getComments() {
+      this.classId = parseInt(location.hash.replace("#/detail/", ""));
       this.comments = [];
       let res = await this.axios.get(`${this.baseUrl}/comment/get`, {
         params: {
@@ -343,8 +345,10 @@ export default {
     const ws = new WebSocket("ws://localhost:8181");
     ws.onopen = function () {
       ws.onmessage = function (msg) {
+        let data = JSON.parse(msg.data);
+        // msg = JSON.parse(msg);
         console.log("ws message ->", msg);
-        if (msg.data == "comment update") {
+        if (data.msg == "comment update") {
           _this.getComments();
         }
       };

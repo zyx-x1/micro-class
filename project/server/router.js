@@ -4,6 +4,7 @@ const api = require("./apis/index");
 const userApi = require("./apis/user");
 const classApi = require("./apis/class");
 const commentApi = require("./apis/comment");
+const messageApi = require("./apis/message")
 // 用户
 router.get("/load", (req, res, next) => {
   userApi.loader(req, res, next);
@@ -81,4 +82,8 @@ router.get("/comment/set", (req, res, next) => {
 router.get("/comment/delete", (req, res, next) => {
   commentApi.deleteComment(req, res, next);
 });
+// 消息
+router.get("/message/count", (req, res, next) => {
+  messageApi.countMessage(req, res, next);
+})
 module.exports = router;
