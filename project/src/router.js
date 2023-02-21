@@ -54,6 +54,11 @@ export default new Router({
       path: "/message",
       name: "message",
       component: () => import("./views/Message/message.vue")
+    },
+    {
+      path: "/upload",
+      name: "upload",
+      component: () => import("./views/Upload/upload.vue")
     }
   ],
 });

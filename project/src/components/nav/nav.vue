@@ -77,7 +77,7 @@
         </li>
         <!-- 投稿 -->
         <li class="item-common">
-          <router-link to="/contribute">
+          <router-link to="/upload">
             <i class="el-icon-upload2"></i>
             投稿
           </router-link>

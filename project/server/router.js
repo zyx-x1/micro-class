@@ -5,6 +5,7 @@ const userApi = require("./apis/user");
 const classApi = require("./apis/class");
 const commentApi = require("./apis/comment");
 const messageApi = require("./apis/message")
+const uploadApi = require("./apis/upload")
 // 用户
 router.get("/load", (req, res, next) => {
   userApi.loader(req, res, next);
@@ -88,5 +89,9 @@ router.get("/message/count", (req, res, next) => {
 })
 router.get("/message/get", (req, res, next) => {
   messageApi.getMessages(req, res, next);
+})
+// 投稿
+router.post("/video/upload", (req, res, next) => {
+  uploadApi.upload(req, res, next);
 })
 module.exports = router;
