@@ -94,4 +94,7 @@ router.get("/message/get", (req, res, next) => {
 router.post("/video/upload", (req, res, next) => {
   uploadApi.upload(req, res, next);
 })
+router.post("/upload/submit", (req, res, next) => {
+  uploadApi.submitUpload(req, res, next);
+})
 module.exports = router;

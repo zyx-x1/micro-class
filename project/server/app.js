@@ -14,8 +14,12 @@ app.all("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   next();
 });
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(uploader())
 app.use("/", router);
+app.use("/", express.static('resource'))
+
 
 server.listen(wsPort, function () {
   console.log("WebScoket is running at ws://localhost:8181");

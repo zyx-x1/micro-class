@@ -11,6 +11,7 @@
     "axios": "^1.2.3",
     "cheerio": "^1.0.0-rc.12",
     "core-js": "^2.6.5",
+    "element-china-area-data": "^5.0.2",
     "element-ui": "^2.15.12",
     "express-fileupload": "^1.4.0",
     "jsonwebtoken": "^9.0.0",
