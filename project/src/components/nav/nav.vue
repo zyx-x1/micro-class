@@ -1,89 +1,113 @@
 <template>
   <div id="nav">
+
     <div class="nav">
+
       <ul class="nav-items">
-        <el-input
-          v-model="searchText"
-          placeholder="请输入关键字"
-          clearable
-          size="small"
-          prefix-icon="el-icon-search"
-          style="width: 200px"
-          @keyup.enter.native="search"
-        ></el-input>
+
+        <el-input v-model="searchText" placeholder="请输入关键字" clearable size="small" prefix-icon="el-icon-search"
+          style="width: 200px" @keyup.enter.native="search"></el-input>
+
         <li class="item-common">
+
           <router-link to="/" @mouseover="showUserOptions = true">
-            <i class="el-icon-house"></i>
-            首页
+
+            <i class="el-icon-house"></i> 首页
+
           </router-link>
+
         </li>
+
         <!-- 消息 -->
+
         <li class="item-common">
+
           <router-link to="/message">
-            <i
-              class="el-icon-message"
-              style="position: relative; top: 1.5px"
-            ></i>
-            消息
-            <el-badge
-              :value="messageCount"
-              class="item"
-              v-show="loginCredentials"
-              :max="99"
-              style="position: relative; left: -10px; top: -5px"
-            ></el-badge>
+
+            <i class="el-icon-message" style="position: relative; top: 1.5px"></i> 消息
+
+            <el-badge :value="messageCount" class="item" v-show="loginCredentials" :max="99"
+              style="position: relative; left: -10px; top: -5px"></el-badge>
+
           </router-link>
+
         </li>
+
         <!-- 收藏 -->
+
         <li class="item-common">
-          <router-link to="/usercenter?view=my_collection">
-            <i
-              class="el-icon-collection-tag"
-              style="position: relative; top: 1.5px"
-            ></i>
-            收藏
+
+          <router-link to="/answer">
+
+            <i class="el-icon-magic-stick" style="position: relative; top: 1.5px"></i> 解惑
+
           </router-link>
+
+        </li>
+        <!-- 解惑 -->
+
+        <li class="item-common">
+
+          <router-link to="/usercenter?view=my_collection">
+
+            <i class="el-icon-collection-tag" style="position: relative; top: 1.5px"></i> 收藏
+
+          </router-link>
+
         </li>
         <!-- 未登录时显示 登录/注册 按钮；登录后显示个人头像，鼠标移入展示部分个人简介，点击后进入个人中心 -->
-        <li
-          v-if="this.loginCredentials"
-          class="avatar"
-          @mouseover="showUserOptions = true"
-          @mouseleave="showUserOptions = false"
-        >
-          <router-link
-            to="/usercenter"
-            style="
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 50px;
-            "
-            ><img
-              :src="this.avatar"
-              alt=""
-              width="40px"
-              style="border-radius: 50%"
-          /></router-link>
+
+        <li v-if="this.loginCredentials" class="avatar" @mouseover="showUserOptions = true"
+          @mouseleave="showUserOptions = false">
+
+          <router-link to="/usercenter" style="
+    
+                              display: flex;
+
+                              justify-content: center;
+
+                              align-items: center;
+
+                              height: 50px;
+
+                            "><img :src="this.avatar" alt="" width="40px" style="border-radius: 50%" /></router-link>
+
           <transition name="fade">
+
             <ul class="user-items" v-show="showUserOptions">
+
               <li @click="$router.push('/usercenter')">个人中心</li>
+
               <li @click="logOut()">退出登录</li>
+
             </ul>
+
           </transition>
+
         </li>
+
         <li v-else class="item-common">
+
           <router-link to="/login">登录/注册</router-link>
+
         </li>
+
         <!-- 投稿 -->
+
         <li class="item-common">
+
           <router-link to="/upload">
-            <i class="el-icon-upload2"></i>
-            投稿
+
+            <i class="el-icon-upload2"></i> 投稿
+
           </router-link>
+
         </li>
+
       </ul>
+
     </div>
+
   </div>
 </template>
 
@@ -164,12 +188,26 @@ export default {
 </script>
 
 <style lang="less">
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter,
+.fade-leave-to
+/* .fade-leave-active below version 2.1.8 */
+
+  {
+  opacity: 0;
+}
+
 #nav {
   height: 50px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
+
   .nav {
     width: 100vw;
     height: 50px;
@@ -177,11 +215,11 @@ export default {
     ul {
       list-style-type: none;
     }
+
     ul.nav-items {
       height: 80px;
       width: 70vw;
-      float: right;
-      // background-color: #c2c4c7;
+      float: right; // background-color: #c2c4c7;
       background-image: linear-gradient(rgb(144, 187, 235) 30%, transparent);
       display: flex;
       justify-content: space-around;
@@ -190,24 +228,37 @@ export default {
       user-select: none;
 
       li.item-common {
-        cursor: pointer;
-        // margin: 0 20px;
+        cursor: pointer; // margin: 0 20px;
+
         a {
           padding: 18px 30px;
           transition: 0.5s;
+
           &:hover {
-            background-color: rgba(0, 0, 0, 0.1);
+            color: rgb(255, 255, 255);
+            text-decoration: underline;
           }
         }
       }
+
       li.avatar a {
         padding: 0 20px;
         transition: 0.5s;
+
+        img {
+          transition: 0.5s;
+        }
+
         &:hover {
-          background-color: rgba(0, 0, 0, 0.1);
+
+          // background-color: rgba(0, 0, 0, 0.1);
+          img {
+            transform: scale(1.2);
+          }
         }
       }
     }
+
     ul.user-items {
       background-color: rgba(0, 0, 0, 0.3);
       width: 100px;
@@ -216,6 +267,7 @@ export default {
       border-bottom-right-radius: 15px;
       overflow: hidden;
       z-index: 100;
+
       li {
         color: #fff;
         height: 30px;
@@ -223,9 +275,11 @@ export default {
         font-size: 12px;
         cursor: pointer;
         transition: 0.5s;
+
         &:hover {
           background-color: rgba(0, 0, 0, 0.3);
         }
+
         a {
           width: 60px;
           padding: 0 20px;
@@ -234,16 +288,20 @@ export default {
       }
     }
   }
+
   #nav {
     a {
       text-decoration: none;
     }
+
     a.router-link-exact-active {
       color: #2c3e50;
     }
   }
+
   .el-input__prefix {
     height: 40px !important;
+
     .el-input__icon el-icon-search {
       height: 40px !important;
     }

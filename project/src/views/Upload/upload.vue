@@ -18,6 +18,12 @@
             <el-input placeholder="请输入作者姓名" v-model="info.authorName" clearable>
             </el-input>
           </div>
+          <div class="form-item author-avatar">
+            <div class="label">作者图片 <span class="color-red"> </span> </div>
+            <input type="file" class="author-avatar-upload"
+              :style="{ '--avatar': !!info.authorAvatar ? ('url(' + info.authorAvatar + ')') : ('url(' + defaultAvatar + ')') }"
+              @change="uploadAuthorAvatar($event)" name="" id="" accept="*">
+          </div>
           <div class="form-item author-area">
             <div class="label">所在地区 <span class="color-red">*</span></div>
             <el-cascader size="large" :options="options" v-model="info.authorArea" @change="handleChange">
@@ -81,7 +87,7 @@
             <div class="tags">
               <div class="tag" v-for="(item, index) in info.chapterTags" :key="index"
                 title="点击标签外即可自动保存
-                                                                                                                                                                                            最长可输入20字">
+                                                                                                                                                                                                                                                                                                                                                                                                                          最长可输入20字">
                 <span class="tag-item" @click="tagGetFocus($event)" ref="tag" contenteditable="true"
                   v-show="!chapterTagFoucs[index]" @blur="updateTag($event, 'chapter', index)"
                   @keydown="stopInput($event)">{{ item
@@ -107,15 +113,17 @@
 <script>
 import { regionData, CodeToText } from "element-china-area-data";
 import { getVideoCover } from "../../utils/index"
-
+import defaultAvatar from "../../../static/images/default_head_t.png"
 export default {
   data() {
     return {
+      defaultAvatar: defaultAvatar,
       baseUrl: this.$store.state.baseUrl,
       accept: ".mp4,.avi,.jpg",
       fileName: "",
       info: {
         authorName: "",
+        authorAvatar: "",
         authorIntro: "",
         authorSchool: "",
         classTitle: "",
@@ -190,6 +198,7 @@ export default {
       console.log("data ->", data)
       const fd = new FormData()
       fd.append("author_name", this.info.authorName)
+      fd.append("author_avatar", !!this.info.authorAvatar ? this.info.authorAvatar : "http://ziyuan.cnweike.cn/public/images/classroom/default_head_t.png")
       fd.append("author_area", data.authorArea)
       fd.append("author_school", this.info.authorSchool)
       fd.append("author_intro", this.info.authorIntro)
@@ -265,12 +274,28 @@ export default {
         return false;
       }
     },
-    getCover() {
-
+    uploadAuthorAvatar(e) {
+      let _this = this
+      let file = e.target.files[0]
+      let fileSize = file.size
+      let fileType = file.type
+      if (fileType.split("/")[0] !== "image") {
+        this.$message.error("格式异常！请上传正确格式的图片!")
+        return
+      }
+      if (fileSize > 1024 * 1024 * 10) {
+        this.$message.error("图片过大！请勿上传10MB以上的图片!")
+        return
+      }
+      let reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        _this.info.authorAvatar = reader.result
+      };
     }
   },
   mounted() {
-
+    console.log(this.img)
   }
 };
 </script>
@@ -325,6 +350,9 @@ export default {
           display: flex;
           margin-bottom: 20px;
           justify-content: space-between;
+
+
+
 
           .label {
             width: 100px;
@@ -388,6 +416,56 @@ export default {
                   color: rgba(0, 0, 0, .5);
                 }
               }
+            }
+          }
+        }
+
+        .author-avatar {
+          justify-content: unset;
+          // margin-left: 20px;
+
+          .author-avatar-upload {
+            width: 110px;
+            height: 100px;
+            float: left;
+            position: relative;
+            padding: 5px 0;
+            color: #fff;
+            margin-left: 20px;
+
+            &::before {
+              content: "";
+              width: 110px;
+              height: 100px;
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: #fff;
+            }
+
+            &::after {
+              content: "";
+              width: 100px;
+              height: 100px;
+              line-height: 100px;
+              text-align: center;
+              position: absolute;
+              top: 0;
+              left: 0;
+              background-color: #fff;
+              border: 1px dashed rgba(0, 0, 0, .3);
+              border-radius: 50%;
+              background: var(--avatar);
+              object-fit: cover;
+              background-size: cover;
+              transition: .5s;
+              cursor: pointer;
+            }
+
+            &:hover::after {
+              content: "选择图片";
+              color: #000;
+              filter: opacity(0.5);
             }
           }
         }

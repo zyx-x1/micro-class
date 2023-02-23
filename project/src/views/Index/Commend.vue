@@ -7,11 +7,7 @@
     <div class="container">
       <div class="carousel">
         <el-carousel width="100%" height="550px">
-          <div
-            v-for="(item, index) in data.slice(0, 4)"
-            :key="index"
-            @click="$router.push('/detail/' + item.id)"
-          >
+          <div v-for="(item, index) in data.slice(0, 4)" :key="index" @click="$router.push('/detail/' + item.id)">
             <el-carousel-item>
               <h3 class="class-title">{{ item.title }}</h3>
               <img :src="item.cover_image" alt="" srcset="" />
@@ -20,11 +16,7 @@
         </el-carousel>
       </div>
       <div class="right">
-        <div
-          class="item"
-          v-for="(item, index) in data.slice(4, 10)"
-          :key="index"
-        >
+        <div class="item" v-for="(item, index) in data.slice(4, 10)" :key="index">
           <div class="cover" @click="$router.push('/detail/' + item.id)">
             <img :src="item.cover_image" alt="" srcset="" />
           </div>
@@ -66,11 +58,13 @@ export default {
 #commend {
   width: 100%;
   margin: 20px 0;
+
   .title {
     width: 100%;
     border-bottom: 1px solid #90bbeb;
     text-align: left;
     margin-bottom: 5px;
+
     // overflow: hidden;
     .title-item {
       width: 100px;
@@ -81,20 +75,26 @@ export default {
       border-top-left-radius: 20px;
     }
   }
+
   .container {
     width: 100%;
     display: flex;
+
     .carousel {
       width: 40%;
       position: relative;
+
       img {
         width: 100%;
         transition: 0.5s;
+        object-fit: cover;
+        object-position: center;
         cursor: pointer;
         // &:hover {
         //   transform: scale(1.2);
         // }
       }
+
       .class-title {
         width: 100%;
         text-align: left;
@@ -109,6 +109,7 @@ export default {
         cursor: pointer;
       }
     }
+
     .right {
       width: 55%;
       display: flex;
@@ -116,22 +117,27 @@ export default {
       flex-direction: column;
       height: 550px;
       justify-content: space-between;
+
       .item {
         width: 33%;
         padding: 20px;
         height: 220px;
         text-align: left;
+
         .cover {
           height: 180px;
           width: 100%;
           overflow: hidden;
           border: 1px solid rgba(0, 0, 0, 0.5);
           border-radius: 10px;
+
           img {
             width: 100%;
             height: 180px;
             transition: 0.5s;
             cursor: pointer;
+            object-fit: cover;
+        object-position: center;
             &:hover {
               transform: scale(1.2);
             }
@@ -142,11 +148,13 @@ export default {
           font-weight: bold;
           line-height: 40px;
           cursor: pointer;
+
           &:hover {
             text-decoration: underline;
             color: #90bbeb;
           }
         }
+
         .class-author {
           color: rgba(0, 0, 0, 0.5);
           cursor: default;
@@ -154,5 +162,4 @@ export default {
       }
     }
   }
-}
-</style>
+}</style>

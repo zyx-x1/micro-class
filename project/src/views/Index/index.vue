@@ -28,11 +28,7 @@
               </p>
               <div class="c-tbottom">
                 <div class="c-author">
-                  <img
-                    :src="item.author_avatar"
-                    alt=""
-                    style="width: 30px; border-radius: 50%"
-                  />
+                  <img :src="item.author_avatar" alt="" style="width: 30px; border-radius: 50%" />
                   <div>{{ item.author_name }}</div>
                 </div>
                 <div class="c-date">{{ item.upload_time }}</div>
@@ -84,12 +80,14 @@ export default {
 #root {
   background-color: #f6f7f8;
 }
+
 #banner {
   width: 100%;
   position: absolute;
   top: 0;
   z-index: 1;
 }
+
 .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
@@ -97,14 +95,17 @@ export default {
   line-height: 400px;
   margin: 0;
 }
+
 .el-carousel__item {
   &:nth-child(2n) {
     background-color: #99a9bf;
   }
+
   &:nth-child(2n + 1) {
     background-color: #d3dce6;
   }
 }
+
 #mclass-main {
   width: 90%;
   margin: 0 auto;
@@ -116,6 +117,7 @@ export default {
   align-items: flex-start;
   justify-content: space-evenly;
 }
+
 .mclass-boxs {
   width: 100%;
   color: #000;
@@ -124,6 +126,7 @@ export default {
   flex-wrap: wrap;
   // flex-direction: column;
   justify-content: space-between;
+
   .mclass-box {
     width: 22%;
     height: 250px;
@@ -135,6 +138,7 @@ export default {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+
     &:hover {
       box-shadow: 0px 0px 10px 3px rgba(56, 56, 56, 0.788);
     }
@@ -146,15 +150,20 @@ export default {
   height: 150px;
   cursor: pointer;
   overflow: hidden;
+
   img {
     width: 100%;
     height: 100%;
-    transition: .5s;
+    transition: 0.5s;
+    object-fit: cover;
+    object-position: center;
+
     &:hover {
       transform: scale(1.2);
     }
   }
 }
+
 .c-titleimg .c-titlecon {
   width: 100%;
   height: 200px;
@@ -163,12 +172,14 @@ export default {
   position: relative;
   padding: 10px;
 }
+
 .c-title {
   text-align: left;
   font-size: 15px;
   padding: 2px 0;
   cursor: pointer;
 }
+
 .c-intro {
   text-align: left;
   padding-left: 0px;
@@ -181,6 +192,7 @@ export default {
   cursor: default;
   // font-weight: bold;
 }
+
 .c-tbottom {
   display: flex;
   //   position: absolute;
@@ -191,11 +203,13 @@ export default {
   width: 100%;
   height: 60px;
 }
+
 .c-author {
   margin-right: 50px;
   height: 30px;
   line-height: 30px;
   display: flex;
+
   div {
     height: 30px;
     line-height: 30px;
@@ -203,16 +217,19 @@ export default {
     cursor: default;
   }
 }
+
 .c-date {
   margin-right: 50px;
   cursor: default;
 }
+
 .c-b-interactive {
   width: 200px;
   height: 20px;
   position: absolute;
   right: 5%;
 }
+
 .c-b-i-star {
   background-size: cover;
   width: 20px;
