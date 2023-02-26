@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="usercenter">
     <div id="inside_banner">
       <div id="user_info">
         <div class="avatar">
@@ -8,11 +8,11 @@
             alt=""
             @mouseenter="hoverAvatar = true"
           />
-          <transition name="fade">
+          <!-- <transition name="fade">
             <div v-show="hoverAvatar" @mouseleave="hoverAvatar = false">
               更换头像
-            </div></transition
-          >
+            </div>
+          </transition> -->
         </div>
         <div class="username">
           <span>{{ $store.state.loginCredentials.username }}</span>
@@ -22,11 +22,14 @@
     <div id="tools">
       <Toolbar />
     </div>
+    <Foot />
   </div>
 </template>
 
 <script>
 import Toolbar from "./Usercenter_toolbar.vue";
+import Foot from "../../components/foot/foot.vue";
+
 export default {
   data() {
     return {
@@ -35,6 +38,16 @@ export default {
   },
   components: {
     Toolbar,
+    Foot,
+  },
+  methods: {
+    checkLogin() {
+      let status = this.$store.state.loginCredentials.status;
+      if (!status) this.$router.push("/login");
+    },
+  },
+  mounted() {
+    this.checkLogin();
   },
 };
 </script>
@@ -44,13 +57,19 @@ export default {
 .fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to
+
+/* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
-#root {
+
+#usercenter {
   min-height: 100vh;
   overflow: hidden;
   background-color: #f6f7f8;
+
   #inside_banner {
     height: 200px;
     width: 100vw;
@@ -59,20 +78,24 @@ export default {
     background-image: url(../../../static/images/sky.png);
     overflow: hidden;
     position: relative;
+
     #user_info {
       position: absolute;
       left: 100px;
       bottom: 30px;
       display: flex;
       align-items: center;
+
       .avatar {
         position: relative;
         border-radius: 50%;
         overflow: hidden;
+
         img {
           width: 60px;
-          cursor: pointer;
+          height: 60px;
         }
+
         div {
           position: absolute;
           left: 0;
@@ -87,8 +110,10 @@ export default {
           color: #fff;
         }
       }
+
       .username {
         margin-left: 15px;
+
         span {
           font-size: 30px;
           font-weight: bold;
@@ -96,6 +121,11 @@ export default {
         }
       }
     }
+  }
+
+  #tools {
+    // margin-bottom: 50px;
+    min-height: calc(100vh - 400px);
   }
 }
 </style>

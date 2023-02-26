@@ -37,6 +37,7 @@ export default {
       }
       this.$store.commit("setLoginCredentials", {
         status: true,
+        id: res.data.user.id,
         username: res.data.user.username,
         avatar: res.data.user.avatar,
         email: res.data.user.email,
@@ -66,16 +67,18 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+
 #nav {
   .el-input__suffix {
     height: 60px !important;
   }
+
   a {
     font-weight: bold;
     color: #2c3e50;
+
     &.router-link-exact-active {
       color: #42b983;
     }
   }
-}
-</style>
+}</style>

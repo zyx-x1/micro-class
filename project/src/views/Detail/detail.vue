@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="detail">
     <div id="play">
       <div class="left" ref="left">
         <div id="play-title">
@@ -11,7 +11,7 @@
             </span>
             <span class="comment-count">
               <i class="el-icon-chat-line-square"></i>
-              {{ this.data.length }}
+              {{ this.commentCount }}
             </span>
             <span class="date">
               <i class="el-icon-time"></i>
@@ -23,7 +23,8 @@
           <video
             id="play_container"
             :src="this.classData.video_src"
-            controls="controls"
+            controls
+            controlslist="nodownload"
           ></video>
         </div>
         <div class="operation">
@@ -71,17 +72,22 @@
           >
         </div>
         <!-- 评论 -->
-        <Comment :classId="this.classId" />
+        <Comment :classId="this.classId" ref="comment" />
       </div>
       <div class="right">
         <div class="title">推荐相关微课</div>
         <div class="items" ref="right">
           <div class="item" v-for="(v, i) in associatedClasses" :key="i">
             <div class="cover">
-              <img :src="v.cover_image" alt="" srcset="" />
+              <img
+                :src="v.cover_image"
+                alt=""
+                srcset=""
+                @click="toNewDetail(v.id)"
+              />
             </div>
             <div class="info">
-              <div class="class-title">
+              <div class="class-title" @click="toNewDetail(v.id)">
                 {{ v.title }}
               </div>
               <div class="author">
@@ -114,6 +120,7 @@ export default {
       classId: -1,
       classData: {},
       data: [],
+      commentCount: 0,
       isLikeActive: false,
       isCollectionActive: false,
       isUserLike: false,
@@ -243,6 +250,10 @@ export default {
       let right = this.$refs.right;
       right.style.maxHeight = height + "px";
     },
+    toNewDetail(id) {
+      this.$router.push(`/detail/${id}`);
+      location.reload();
+    },
   },
   mounted() {
     this.getClassId();
@@ -250,20 +261,29 @@ export default {
       this.getMicroClass(this.classId);
     }
     this.setRightHeight();
+    this.commentCount = this.$refs.comment.deliverCount();
   },
 };
 </script>
 
 <style lang="less" scoped>
-#root {
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 1px;
+}
+
+#detail {
   margin-top: 100px;
+
   #play {
     width: 80%;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
+
     .left {
       width: 60%;
+
       #play-title {
         width: 100%;
         font-size: 28px;
@@ -271,17 +291,21 @@ export default {
         margin-bottom: 10px;
         text-align: left;
       }
+
       .video {
         height: 50vh;
       }
+
       #play_container {
         width: 100%;
         height: 50vh;
         float: left;
         box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
       }
+
       .title-info {
         user-select: none;
+
         .play-count,
         .comment-count,
         .date {
@@ -290,6 +314,7 @@ export default {
           color: rgba(0, 0, 0, 0.5);
         }
       }
+
       .operation {
         width: 100%;
         height: 50px;
@@ -298,20 +323,24 @@ export default {
         display: flex;
         align-items: center;
         justify-content: flex-start;
+
         .like,
         .collection {
           cursor: pointer;
           line-height: 30px;
           margin-right: 30px;
+
           &:hover {
             color: #1296db;
           }
         }
+
         svg {
           width: 30px;
           height: 30px;
           margin-right: 5px;
         }
+
         span {
           font-size: 20px;
           line-height: 30px;
@@ -319,10 +348,12 @@ export default {
           top: -5px;
         }
       }
+
       .tags {
         width: 100%;
         display: flex;
         margin: 10px 0;
+
         .tag {
           background-color: #f1f2f3;
           margin: 5px;
@@ -333,33 +364,64 @@ export default {
         }
       }
     }
+
     .right {
       width: 30%;
       margin-top: 75px;
 
       .title {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(18, 150, 219, 0.5);
         text-align: left;
         text-indent: 2em;
         padding: 10px;
         border-radius: 10px;
         height: 30px;
         line-height: 30px;
+        color: #fff;
       }
+
       .items {
-        overflow: scroll;
+        overflow-y: auto;
+        border-radius: 10px;
+        margin-top: 10px;
+        padding: 10px;
+        box-shadow: 0 0 10px 1px inset rgba(18, 150, 219, 0.5);
+        &::-webkit-scrollbar-thumb {
+          border-radius: 10px;
+          background-color: rgba(0, 0, 0, 0.5);
+          background-image: -webkit-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.2) 25%,
+            transparent 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0.2) 75%,
+            transparent 75%,
+            transparent
+          );
+        }
+
+        &::-webkit-scrollbar-track {
+          box-shadow: inset 0 0 5px rgb(144, 187, 235);
+          background: #ededed;
+          border-radius: 10px;
+        }
+
         .item {
           margin: 40px 0;
           display: flex;
+
           .cover {
             width: 50%;
             height: 150px;
             overflow: hidden;
             position: relative;
             cursor: pointer;
+
             &:hover img {
               transform: scale(1.2) translate(-40%, -40%);
             }
+
             img {
               width: 100%;
               position: absolute;
@@ -369,17 +431,21 @@ export default {
               transition: 0.5s;
             }
           }
+
           .info {
             width: 50%;
             text-align: left;
             padding: 0 20px;
+
             .class-title {
               font-weight: bold;
               cursor: pointer;
+
               &:hover {
                 color: #1296db;
               }
             }
+
             .author {
               margin-top: 20px;
             }
@@ -388,13 +454,16 @@ export default {
       }
     }
   }
+
   #foot {
     height: 500px;
   }
 }
+
 .like-count-active {
   color: #1296db;
 }
+
 .collection-count-active {
   color: #1296db;
 }

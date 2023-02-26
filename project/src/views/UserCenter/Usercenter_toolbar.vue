@@ -1,22 +1,24 @@
 <template>
-  <div id="root">
+  <div id="usercenter-toolbar">
     <div id="main" style="position: relative">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="我的视频" name="my_video">
           <span slot="label">
             <i class="el-icon-video-play"></i>
             我的视频</span
-          ><MyVideo v-if="activeName == 'my_video'" />
+          >
+          <MyVideo v-if="activeName == 'my_video'" />
         </el-tab-pane>
         <el-tab-pane label="我的收藏" name="my_collection">
           <span slot="label">
             <i class="el-icon-collection-tag"></i> 我的收藏</span
-          ><MyCollection v-if="activeName == 'my_collection'"
-        /></el-tab-pane>
+          >
+          <MyCollection v-if="activeName == 'my_collection'" />
+        </el-tab-pane>
         <el-tab-pane label="设置" name="setting">
-          <span slot="label"> <i class="el-icon-setting"></i> 个人资料</span
-          ><Setting v-if="activeName == 'setting'"
-        /></el-tab-pane> </el-tabs
+          <span slot="label"> <i class="el-icon-setting"></i> 个人资料</span>
+          <Setting v-if="activeName == 'setting'" />
+        </el-tab-pane> </el-tabs
       ><el-input
         v-model="searchText"
         v-show="activeName == 'my_video' || activeName == 'my_collection'"
@@ -66,19 +68,29 @@ export default {
       });
       this.activeName = obj.view;
     },
-    search(){
-      this.$router.push("/search?search_txt=" + this.searchText)
-    }
+    search() {
+      this.$router.push("/search?search_txt=" + this.searchText);
+    },
   },
   mounted() {
     this.checkHash();
   },
+  watch:{
+    "$route"(){
+      this.checkHash()
+    }
+  }
 };
 </script>
 
 <style lang="less" scoped>
-#root {
-  width: 80%;
+#usercenter-toolbar {
+  width: 100%;
   margin: 0 auto;
+
+  #main {
+    width: 80%;
+    margin: 0 auto;
+  }
 }
 </style>

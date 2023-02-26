@@ -1,55 +1,40 @@
 <template>
   <div id="root">
     <div id="banner">
-      <div id="carousel">
+      <img :src="bannerImage" alt="" srcset="" />
+      <!-- <div id="carousel">
         <el-carousel width="100%" height="450px">
           <el-carousel-item v-for="item in 4" :key="item">
             <h3 class="small">{{ item }}</h3>
           </el-carousel-item>
         </el-carousel>
-      </div>
+      </div> -->
     </div>
     <div id="recommend">
       <div id="mclass-main">
         <Commend />
-        <div class="mclass-boxs">
-          <div class="mclass-box" v-for="(item, i) in data" :key="i">
-            <div class="c-titleimg">
-              <img :src="item.cover_image" alt="" @click="toDetail(item.id)" />
-            </div>
-            <div class="c-titlecon">
-              <h3 class="c-title" :title="item.title">
-                {{ item.title.substr(0, 20)
-                }}<span v-show="item.content_description.length > 20">...</span>
-              </h3>
-              <p class="c-intro" :title="item.content_description">
-                {{ item.content_description.substr(0, 18)
-                }}<span v-show="item.content_description.length > 18">...</span>
-              </p>
-              <div class="c-tbottom">
-                <div class="c-author">
-                  <img :src="item.author_avatar" alt="" style="width: 30px; border-radius: 50%" />
-                  <div>{{ item.author_name }}</div>
-                </div>
-                <div class="c-date">{{ item.upload_time }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <FilterClass />
+        <NewClass />
       </div>
     </div>
+    <Foot />
   </div>
 </template>
 
 <script>
 import { formatTime } from "../../utils/index";
-import Commend from "./Commend.vue";
+import Commend from "./commend";
+import FilterClass from "./filter";
+import NewClass from "./new";
+import Foot from "../../components/foot/foot.vue";
+import BannerImage from "../../../static/images/banner.png";
 export default {
-  components: { Commend },
+  components: { Commend, FilterClass, NewClass, Foot },
   data() {
     return {
       data: [],
       baseUrl: this.$store.state.baseUrl,
+      bannerImage: BannerImage,
     };
   },
   methods: {
@@ -72,6 +57,7 @@ export default {
   },
   created() {
     this.getMicroClass();
+    console.log(`Filter`, FilterClass);
   },
 };
 </script>
@@ -83,26 +69,15 @@ export default {
 
 #banner {
   width: 100%;
+  height: 400px;
   position: absolute;
   top: 0;
   z-index: 1;
-}
-
-.el-carousel__item h3 {
-  color: #475669;
-  font-size: 14px;
-  opacity: 0.75;
-  line-height: 400px;
-  margin: 0;
-}
-
-.el-carousel__item {
-  &:nth-child(2n) {
-    background-color: #99a9bf;
-  }
-
-  &:nth-child(2n + 1) {
-    background-color: #d3dce6;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 }
 
@@ -110,12 +85,13 @@ export default {
   width: 90%;
   margin: 0 auto;
   min-height: 400px;
-  margin-top: 450px;
+  margin-top: 400px;
   padding-top: 20px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-evenly;
+  margin-bottom: 100px;
 }
 
 .mclass-boxs {

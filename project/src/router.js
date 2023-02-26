@@ -8,7 +8,7 @@ Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: "/",
@@ -28,6 +28,11 @@ export default new Router({
       path: "/signup",
       name: "signup",
       component: () => import("./views/Login/Signup.vue"),
+    },
+    {
+      path: "/forget",
+      name: "forget",
+      component: () => import("./views/Login/Forget.vue"),
     },
     {
       path: "/usercenter",
@@ -67,3 +72,8 @@ export default new Router({
     }
   ],
 });
+
+router.afterEach((to, from, nex) => {
+  window.scrollTo(0, 0)
+})
+export default router

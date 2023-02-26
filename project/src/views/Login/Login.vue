@@ -1,5 +1,5 @@
 <template>
-  <div id="root">
+  <div id="login">
     <canvas id="cvs" ref="cvs"></canvas>
     <div id="login-container">
       <el-form
@@ -32,7 +32,9 @@
             >登录</el-button
           >
           <section class="login-else">
-            <!-- <span class="login-forget link" @click="forgetPass()"></span> -->
+            <span class="login-forget link" @click="forgetPass()"
+              >忘记密码</span
+            >
             <span class="link" @click="toRegister()">没有账号？点击注册</span>
           </section>
         </el-form-item>
@@ -118,6 +120,7 @@ export default {
             localStorage.setItem("loginCredentials", 1);
             this.$store.commit("setLoginCredentials", {
               status: true,
+              id: result.data.resData.id,
               username: result.data.resData.username,
               avatar: result.data.resData.avatar,
               email: result.data.resData.email,
@@ -128,7 +131,7 @@ export default {
               message: "登录成功！",
               type: "success",
             });
-            
+
             setTimeout(() => {
               this.$router.push("/");
               location.reload();
@@ -144,8 +147,7 @@ export default {
       }, 10);
     },
     forgetPass() {
-      this.$router.push("/login?v=f");
-      location.reload();
+      this.$router.push("/forget");
       window.scrollTo(0, 0);
     },
   },
@@ -156,15 +158,17 @@ export default {
 </script>
 
 <style lang="less">
-#root {
+#login {
   width: 100vw;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
   .el-form {
     width: 80%;
   }
+
   #cvs {
     position: absolute;
     left: 0;
@@ -173,6 +177,7 @@ export default {
     height: 100%;
     z-index: -1;
   }
+
   #login-container {
     width: 50vw;
     height: 60vh;
@@ -180,18 +185,29 @@ export default {
     border-radius: 5px;
     box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.5);
     background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+
+    form {
+      height: 100%;
+      width: 80%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: center;
+      .el-form-item {
+        width: 100%;
+      }
+    }
     .el-input {
       width: 100%;
       margin-top: 50px;
     }
+
     .el-button {
       margin-top: 50px;
       padding: 12px 40px;
       width: 100%;
+
       span {
         letter-spacing: 5px;
         text-align: center;
@@ -199,6 +215,7 @@ export default {
         display: inline-block;
       }
     }
+
     .link {
       &:hover {
         text-decoration: underline;
@@ -206,6 +223,7 @@ export default {
       }
     }
   }
+
   .login-else {
     margin: 10px auto 0;
     width: 100%;

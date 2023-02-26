@@ -87,7 +87,7 @@
             <div class="tags">
               <div class="tag" v-for="(item, index) in info.chapterTags" :key="index"
                 title="点击标签外即可自动保存
-                                                                                                                                                                                                                                                                                                                                                                                                                          最长可输入20字">
+                                                                                                                                                                                                                                                                                                                                                                                                                            最长可输入20字">
                 <span class="tag-item" @click="tagGetFocus($event)" ref="tag" contenteditable="true"
                   v-show="!chapterTagFoucs[index]" @blur="updateTag($event, 'chapter', index)"
                   @keydown="stopInput($event)">{{ item
@@ -292,10 +292,14 @@ export default {
       reader.onload = function () {
         _this.info.authorAvatar = reader.result
       };
-    }
+    },
+    checkLogin() {
+      let status = this.$store.state.loginCredentials.status;
+      if (!status) this.$router.push("/login");
+    },
   },
   mounted() {
-    console.log(this.img)
+    this.checkLogin()
   }
 };
 </script>

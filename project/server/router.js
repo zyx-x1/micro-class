@@ -28,7 +28,7 @@ router.get("/register", (req, res, next) => {
   userApi.register(req, res, next);
 });
 
-router.get("/resetpwd", (req, res, next) => {
+router.get("/forget/submit", (req, res, next) => {
   userApi.resetpwd(req, res, next);
 });
 
@@ -36,12 +36,20 @@ router.get("/register/mail/getcode", (req, res, next) => {
   userApi.rEmailCode(req, res, next);
 });
 
-router.get("/email", (req, res, next) => {
-  userApi.email(req, res, next);
+router.get("/reset/email", (req, res, next) => {
+  userApi.resetEmail(req, res, next);
 });
 
 router.get("/user/info/search", (req, res, next) => {
   userApi.getUserInfoForName(req, res, next);
+});
+
+router.post("/user/avatar/update", (req, res, next) => {
+  userApi.updateUserAvatar(req, res, next);
+});
+
+router.get("/user/avatar/get", (req, res, next) => {
+  userApi.getAvatar(req, res, next);
 });
 // 微课
 router.get("/class/get", (req, res, next) => {
@@ -73,6 +81,21 @@ router.get("/class/associated/get", (req, res, next) => {
 router.get("/class/commend", (req, res, next) => {
   classApi.getCommendClass(req, res, next);
 });
+router.get("/class/subjects/get", (req, res, next) => {
+  classApi.getSubjects(req, res, next);
+});
+
+router.get("/class/subject/filter", (req, res, next) => {
+  classApi.filterSubjectClass(req, res, next);
+});
+
+router.get("/class/new/get", (req, res, next) => {
+  classApi.getNewClass(req, res, next);
+});
+
+router.get("/class/creator/get", (req, res, next) => {
+  classApi.getClassForCreator(req, res, next);
+});
 // 评论
 router.get("/comment/get", (req, res, next) => {
   commentApi.getComment(req, res, next);
@@ -83,12 +106,16 @@ router.get("/comment/set", (req, res, next) => {
 router.get("/comment/delete", (req, res, next) => {
   commentApi.deleteComment(req, res, next);
 });
+
 // 消息
 router.get("/message/count", (req, res, next) => {
   messageApi.countMessage(req, res, next);
 })
 router.get("/message/get", (req, res, next) => {
   messageApi.getMessages(req, res, next);
+})
+router.get("/message/read", (req, res, next) => {
+  messageApi.readMessage(req, res, next);
 })
 // 投稿
 router.post("/video/upload", (req, res, next) => {

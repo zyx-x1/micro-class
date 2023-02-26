@@ -131,5 +131,97 @@ module.exports = {
       data,
       total: data.length
     })
+  },
+  async getSubjects(req, res, next) {
+    let data = [
+      {
+        value: '小学',
+        label: '小学',
+        children: []
+      },
+      {
+        value: '初中',
+        label: '初中',
+        children: []
+      },
+      {
+        value: '高中',
+        label: '高中',
+        children: []
+      },
+    ]
+    // 小学
+    let elementarySql = `select knowledge_information from micro_class where knowledge_information like "%小学%"`
+    let elementarys = await db(elementarySql)
+    elementarys = [...new Set(elementarys.map(el => el.knowledge_information.split("|")[0].replace("小学", "")))]
+    data[0].children = elementarys.map(el => {
+      let temp = el
+      el = {}
+      el.value = temp
+      el.label = temp
+      return el
+    })
+    // 初中
+    let middleSql = `select knowledge_information from micro_class where knowledge_information like "%初中%"`
+    let middles = await db(middleSql)
+    middles = [...new Set(middles.map(el => el.knowledge_information.split("|")[0].replace("初中", "")))]
+    data[1].children = middles.map(el => {
+      let temp = el
+      el = {}
+      el.value = temp
+      el.label = temp
+      return el
+    })
+    // 高中
+    let highSql = `select knowledge_information from micro_class where knowledge_information like "%高中%"`
+    let highs = await db(highSql)
+    highs = [...new Set(highs.map(el => el.knowledge_information.split("|")[0].replace("高中", "")))]
+    data[2].children = highs.map(el => {
+      let temp = el
+      el = {}
+      el.value = temp
+      el.label = temp
+      return el
+    })
+    return res.json({
+      status: "success",
+      data
+    })
+  },
+  async filterSubjectClass(req, res, next) {
+    let { subject, page_size, curr_page } = req.query
+    let sql = `select * from micro_class where knowledge_information like ? order by upload_time desc limit ?,?`
+    let result = await db(sql, [`%${subject}%`, (curr_page - 1) * page_size, parseInt(page_size)])
+    let totalSql = `select count(id) from micro_class where knowledge_information like ? order by upload_time desc`
+    let totalResult = await db(totalSql, [`%${subject}%`])
+    return res.json({
+      status: "success",
+      data: result,
+      total: totalResult[0]['count(id)']
+    })
+  },
+  async getNewClass(req, res, next) {
+    let { page_size, curr_page } = req.query
+    let totalSql = `select count(id) from micro_class order by upload_time desc`
+    let totalResult = await db(totalSql)
+    let sql = `select * from micro_class order by upload_time desc limit ?,?`
+    let result = await db(sql, [(curr_page - 1) * page_size, parseInt(page_size)])
+    return res.json({
+      status: "success",
+      data: result,
+      total: totalResult[0]['count(id)']
+    })
+  },
+  async getClassForCreator(req, res, next) {
+    let { id, page_size, curr_page } = req.query
+    let totalSql = `select count(id) from micro_class where creator_id=?`
+    let totalResult = await db(totalSql, [id])
+    let sql = `select * from micro_class  where creator_id=? order by upload_time desc limit ?,?`
+    let result = await db(sql, [id, (curr_page - 1) * page_size, parseInt(page_size)])
+    return res.json({
+      status: "success",
+      data: result,
+      total: totalResult[0]['count(id)']
+    })
   }
 }   

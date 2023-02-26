@@ -22,7 +22,7 @@
 			</div>
 			<div class="main">
 				<div class="in">
-					<el-input placeholder="请输入内容" v-model="searchTxt" class="input-with-select"
+					<el-input placeholder="当前AI模型提供的回答可能存在误差，一切问题以实际为主!" v-model="searchTxt" class="input-with-select"
 						@keydown.enter.native="submitProblem()">
 						<el-select class="model-select" v-model="currentModel" slot="prepend" placeholder="请选择AI模型"
 							:title="currentModel">
@@ -62,7 +62,7 @@ export default {
 	data() {
 		return {
 			baseUrl: this.$store.state.baseUrl,
-			MAX_TOKENS_SIZE: 500,
+			MAX_TOKENS_SIZE: 2000,
 			dynamicDot: ".",
 			modelList: [],
 			modelStatus: true,
@@ -190,7 +190,7 @@ export default {
 		box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
 
 		.tips {
-			width: 90%;
+			width: calc(100% - 20px);
 			margin: 0 auto;
 			border-radius: 10px;
 			background-color: rgba(0, 0, 0, 0.1);
@@ -262,6 +262,7 @@ export default {
 					padding: 30px;
 					text-align: left;
 					border-radius: 10px;
+
 					.prompt-avatar {
 						width: 100px;
 

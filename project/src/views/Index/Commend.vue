@@ -137,7 +137,8 @@ export default {
             transition: 0.5s;
             cursor: pointer;
             object-fit: cover;
-        object-position: center;
+            object-position: center;
+
             &:hover {
               transform: scale(1.2);
             }
@@ -162,4 +163,5 @@ export default {
       }
     }
   }
-}</style>
+}
+</style>

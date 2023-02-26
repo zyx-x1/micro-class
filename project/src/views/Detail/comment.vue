@@ -235,6 +235,7 @@ export default {
       this.comments.forEach((el) => {
         this.commentCount += el._subComments.length;
       });
+      console.log("this.comments ->", this.comments);
     },
     reply(index, superioi_id, replied_email, responder_name) {
       if (!this.$store.state.loginCredentials.status) {
@@ -336,6 +337,9 @@ export default {
           });
         });
     },
+    deliverCount(){
+      return this.commentCount
+    }
   },
   created() {
     this.getComments();

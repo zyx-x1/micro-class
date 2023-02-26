@@ -6,6 +6,7 @@ const secret = "zyxzyx"; //token密钥
 const tokenExpiresTime = 1000 * 60 * 60 * 24 * 7; //token过期时间,毫秒为单位， 7天
 const { getPostData } = require("../utils/index");
 const defaultAvatar = require("../utils/defaultAvatar");
+const { wss } = require("../ws")
 module.exports = {
   checkToken(req, res, next) {
     const { token } = req.query;
@@ -15,7 +16,7 @@ module.exports = {
         return res.json({ status: "fail", msg: "token超时，请重新登录！" });
       } else {
         db(
-          `select username,avatar,email,username_updatetime from user where email="${decodeToken.email}"`
+          `select username,avatar,email,username_updatetime,id from user where email="${decodeToken.email}"`
         )
           .then((user) => {
             return res.json({
@@ -111,7 +112,7 @@ module.exports = {
             };
             let token = jwt.sign(payload, secret);
             db(
-              `select username,avatar,email,username_updatetime from user where email="${req.query.email}"`
+              `select username,avatar,email,id,username_updatetime from user where email="${req.query.email}"`
             )
               .then((resData) => {
                 return res.json({
@@ -176,14 +177,14 @@ module.exports = {
     let selectUserSql = sqlMap.getUser;
     db(selectUserSql).then((val) => {
       val.forEach((item, index) => {
-        if (item.username === req.query.username) {
+        if (item.email === req.query.email) {
           userIndex = index;
         }
       });
       let updatePwdSql = sqlMap.updatePassword;
-      let updateParams = [req.query.password, req.query.username];
+      let updateParams = [req.query.password, req.query.email];
       db(updatePwdSql, updateParams).then(() => {
-        return res.send({ status: 1 });
+        return res.json({ status: "success" });
       });
     });
   },
@@ -212,13 +213,13 @@ module.exports = {
       }
     });
   },
-  email(req, res, next) {
+  resetEmail(req, res, next) {
     let code;
     let sql = sqlMap.getUser;
     db(sql).then((val) => {
       let userIndex = -1;
       val.forEach((item, index) => {
-        if (item.username === req.query.username) {
+        if (item.email === req.query.email) {
           userIndex = index;
         }
       });
@@ -228,8 +229,8 @@ module.exports = {
         code = Math.floor(Math.random() * 9000) + 1000;
         let mailOptions = {
           from: `x75046@qq.com`,
-          to: val[userIndex].mail,
-          subject: "VCANVAS验证码",
+          to: val[userIndex].email,
+          subject: "微课网",
           text: `${code}`,
           html: `<p style=""align:center;>您的验证码为</p>
           <h2 style=""align:center;>${code}</h2>`,
@@ -243,4 +244,30 @@ module.exports = {
       }
     });
   },
+  async updateUserAvatar(req, res, next) {
+    let { userid, avatar } = req.body
+    let sql = `update user set avatar=? where id=?`
+    let params = [avatar, userid]
+    let result = await db(sql, params)
+    wss.clients.forEach((ws) => {
+      ws.send(JSON.stringify({ msg: "avatar update" }));
+    });
+    return res.json(
+      {
+        status: "success",
+        data: avatar
+      }
+    );
+  },
+  async getAvatar(req, res, next) {
+    let { id } = req.query
+    let sql = `select avatar from user where id=?`
+    let result = await db(sql, [id])
+    return res.json(
+      {
+        status: "success",
+        data: result[0].avatar
+      }
+    );
+  }
 };

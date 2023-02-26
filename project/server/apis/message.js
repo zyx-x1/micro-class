@@ -19,8 +19,9 @@ module.exports = {
     },
     async countMessage(req, res, next) {
         let { user } = req.query
-        let sql = `select id from message where receiver_email=?`
+        let sql = `select id from message where is_read is null and receiver_email=?`
         let result = await db(sql, [user])
+
         return res.json({
             status: "success",
             total: result.length
@@ -58,6 +59,21 @@ module.exports = {
                     total: result.length
                 })
             }
+        })
+    },
+    async readMessage(req, res, next) {
+        let { id } = req.query
+        let sql = `update message set is_read=1 where id=?`
+        let result = await db(sql, [id])
+        wss.clients.forEach((ws) => {
+            ws.send(
+                JSON.stringify({
+                    msg: "message update"
+                })
+            );
+        });
+        return res.json({
+            status: "success"
         })
     }
 }

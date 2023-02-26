@@ -1,113 +1,113 @@
 <template>
   <div id="nav">
-
     <div class="nav">
-
       <ul class="nav-items">
-
-        <el-input v-model="searchText" placeholder="请输入关键字" clearable size="small" prefix-icon="el-icon-search"
-          style="width: 200px" @keyup.enter.native="search"></el-input>
+        <el-input
+          v-model="searchText"
+          placeholder="请输入关键字"
+          clearable
+          size="small"
+          prefix-icon="el-icon-search"
+          style="width: 200px"
+          @keyup.enter.native="search"
+        ></el-input>
 
         <li class="item-common">
-
           <router-link to="/" @mouseover="showUserOptions = true">
-
             <i class="el-icon-house"></i> 首页
-
           </router-link>
-
         </li>
 
         <!-- 消息 -->
 
         <li class="item-common">
-
           <router-link to="/message">
+            <i
+              class="el-icon-message"
+              style="position: relative; top: 1.5px"
+            ></i>
+            消息
 
-            <i class="el-icon-message" style="position: relative; top: 1.5px"></i> 消息
-
-            <el-badge :value="messageCount" class="item" v-show="loginCredentials" :max="99"
-              style="position: relative; left: -10px; top: -5px"></el-badge>
-
+            <el-badge
+              :value="messageCount"
+              class="item"
+              v-show="loginCredentials"
+              :max="99"
+              style="position: relative; left: -10px; top: -5px"
+            ></el-badge>
           </router-link>
-
         </li>
 
         <!-- 收藏 -->
 
         <li class="item-common">
-
           <router-link to="/answer">
-
-            <i class="el-icon-magic-stick" style="position: relative; top: 1.5px"></i> 解惑
-
+            <i
+              class="el-icon-magic-stick"
+              style="position: relative; top: 1.5px"
+            ></i>
+            解惑
           </router-link>
-
         </li>
         <!-- 解惑 -->
 
         <li class="item-common">
-
           <router-link to="/usercenter?view=my_collection">
-
-            <i class="el-icon-collection-tag" style="position: relative; top: 1.5px"></i> 收藏
-
+            <i
+              class="el-icon-collection-tag"
+              style="position: relative; top: 1.5px"
+            ></i>
+            收藏
           </router-link>
-
         </li>
         <!-- 未登录时显示 登录/注册 按钮；登录后显示个人头像，鼠标移入展示部分个人简介，点击后进入个人中心 -->
 
-        <li v-if="this.loginCredentials" class="avatar" @mouseover="showUserOptions = true"
-          @mouseleave="showUserOptions = false">
+        <li
+          v-if="this.loginCredentials"
+          class="avatar"
+          @mouseover="showUserOptions = true"
+          @mouseleave="showUserOptions = false"
+        >
+          <router-link
+            to="/usercenter"
+            style="
+              display: flex;
 
-          <router-link to="/usercenter" style="
-    
-                              display: flex;
+              justify-content: center;
 
-                              justify-content: center;
+              align-items: center;
 
-                              align-items: center;
-
-                              height: 50px;
-
-                            "><img :src="this.avatar" alt="" width="40px" style="border-radius: 50%" /></router-link>
+              height: 50px;
+            "
+            ><img
+              :src="this.avatar"
+              alt=""
+              width="40px"
+              style="border-radius: 50%"
+          /></router-link>
 
           <transition name="fade">
-
             <ul class="user-items" v-show="showUserOptions">
-
               <li @click="$router.push('/usercenter')">个人中心</li>
 
               <li @click="logOut()">退出登录</li>
-
             </ul>
-
           </transition>
-
         </li>
 
         <li v-else class="item-common">
-
           <router-link to="/login">登录/注册</router-link>
-
         </li>
 
         <!-- 投稿 -->
 
         <li class="item-common">
-
           <router-link to="/upload">
-
             <i class="el-icon-upload2"></i> 投稿
-
           </router-link>
-
         </li>
-
       </ul>
-
     </div>
-
   </div>
 </template>
 
@@ -165,6 +165,14 @@ export default {
         }
       }
     },
+    async getAvatar() {
+      let result = await this.axios.get(
+        `${this.baseUrl}/user/avatar/get?id=${this.$store.state.loginCredentials.id}`
+      );
+      if (result.data.status == "success") {
+        this.avatar = result.data.data;
+      }
+    },
   },
   mounted() {
     this.checkStateLoginCredentials();
@@ -181,6 +189,9 @@ export default {
         if (data.msg == "message update") {
           _this.getMessageCount();
         }
+        if (data.msg == "avatar update") {
+          _this.getAvatar();
+        }
       };
     };
   },
@@ -190,14 +201,12 @@ export default {
 <style lang="less">
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
 .fade-leave-to
-/* .fade-leave-active below version 2.1.8 */
-
-  {
+/* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
 
@@ -247,10 +256,11 @@ export default {
 
         img {
           transition: 0.5s;
+          height: 40px;
+          width: 40px;
         }
 
         &:hover {
-
           // background-color: rgba(0, 0, 0, 0.1);
           img {
             transform: scale(1.2);

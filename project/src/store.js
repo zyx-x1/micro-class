@@ -9,6 +9,7 @@ export default new Vuex.Store({
     // 登录凭证
     loginCredentials: {
       status: false,
+      id:-1,
       username: "",
       loginTime: null,
       email: "",
