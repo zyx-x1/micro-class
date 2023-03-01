@@ -7,7 +7,50 @@
       </div>
       <div id="main">
         <div class="items">
-          <div class="item" v-for="(item, index) in messages" :key="index">
+          <div
+            class="item"
+            v-for="(item, index) in messages.filter(
+              (message) => message.type == 'audit'
+            )"
+            :key="index"
+          >
+            <div class="avatar">
+              <!-- <img src="null" alt="" srcset="" /> -->
+            </div>
+            <div class="body">
+              <div class="title">微课审核通知</div>
+              <div class="content-container">
+                <div class="content">
+                  {{ item.content }}
+                </div>
+                <span class="class-title">
+                  {{ item._class_title }}
+                </span>
+              </div>
+
+              <div class="date">
+                {{ item.date }}
+              </div>
+            </div>
+            <div class="read">
+              <el-button
+                v-if="item.is_read != 1"
+                size="small"
+                @click="readMessage(item.id)"
+                >设为已读</el-button
+              >
+              <div class="readed" v-else aria-disabled="true">
+                <i class="el-icon-check"></i> 已读
+              </div>
+            </div>
+          </div>
+          <div
+            class="item"
+            v-for="(item, index) in messages.filter(
+              (message) => message.type == 'comment'
+            )"
+            :key="index"
+          >
             <div class="avatar">
               <img :src="item._sender.avatar" alt="" srcset="" />
             </div>
@@ -20,7 +63,10 @@
                 <div class="content">
                   {{ item.content }}
                 </div>
-                <span class="class-title" @click="$router.push(`/detail/${item.class_id}`)">
+                <span
+                  class="class-title"
+                  @click="$router.push(`/detail/${item.class_id}`)"
+                >
                   {{ item._class_title }}
                 </span>
               </div>
@@ -30,8 +76,15 @@
               </div>
             </div>
             <div class="read">
-              <el-button v-if="item.is_read != 1" size="small" @click="readMessage(item.id)">设为已读</el-button>
-              <div class="readed" v-else aria-disabled="true"> <i class="el-icon-check"></i> 已读</div>
+              <el-button
+                v-if="item.is_read != 1"
+                size="small"
+                @click="readMessage(item.id)"
+                >设为已读</el-button
+              >
+              <div class="readed" v-else aria-disabled="true">
+                <i class="el-icon-check"></i> 已读
+              </div>
             </div>
           </div>
         </div>
@@ -66,20 +119,21 @@ export default {
     async readMessage(id) {
       let res = await this.axios.get(`${this.baseUrl}/message/read`, {
         params: {
-          id
+          id,
         },
       });
       if (res.data.status == "success") {
-        this.getMessages()
+        this.getMessages();
       }
-    },checkLogin() {
+    },
+    checkLogin() {
       let status = this.$store.state.loginCredentials.status;
       if (!status) this.$router.push("/login");
     },
   },
   mounted() {
     this.getMessages();
-    this.checkLogin()
+    this.checkLogin();
   },
 };
 </script>
@@ -168,12 +222,11 @@ export default {
 
             .el-button {
               border-radius: 15px;
-
             }
 
             .readed {
               cursor: default;
-              background-color: rgba(0, 0, 0, .1);
+              background-color: rgba(0, 0, 0, 0.1);
               padding: 8px 15px;
               border-radius: 20px;
               color: #90bbeb;

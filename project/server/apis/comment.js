@@ -8,6 +8,10 @@ module.exports = {
     let sql = `select * from comment where class_id = ?`;
     let _comments = await db(sql, [classId]);
     let comments = [];
+    if (_comments.length == 0) return res.json({
+      status: "success",
+      data: []
+    });
     _comments.forEach(async (comment, index) => {
       let initiator_email = comment.initiator_email;
       let replied_email = comment.replied_email;

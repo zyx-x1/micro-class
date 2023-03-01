@@ -75,11 +75,11 @@ export default {
   mounted() {
     this.checkHash();
   },
-  watch:{
-    "$route"(){
-      this.checkHash()
-    }
-  }
+  watch: {
+    $route() {
+      this.checkHash();
+    },
+  },
 };
 </script>
 

@@ -8,5 +8,5 @@ exports.sqlMap = {
   getClass: "select * from micro_class order by upload_time desc limit ?,?",
   getClassById:
     "select * from micro_class m left join comment c on m.id=c.class_id  where m.id = ?",
-  updateClassPlayCount: "update micro_class set play_count=? where id=?",
+  updateClassPlayCount: "update micro_class set play_count = ? where id = ?",
 };

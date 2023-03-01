@@ -128,7 +128,7 @@ export default {
 <style lang="less" scoped>
 #search-result {
   margin-top: 150px;
-  h3{
+  h3 {
     margin-bottom: 20px;
   }
   .items {

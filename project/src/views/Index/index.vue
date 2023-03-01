@@ -27,14 +27,13 @@ import Commend from "./commend";
 import FilterClass from "./filter";
 import NewClass from "./new";
 import Foot from "../../components/foot/foot.vue";
-import BannerImage from "../../../static/images/banner.png";
 export default {
   components: { Commend, FilterClass, NewClass, Foot },
   data() {
     return {
       data: [],
       baseUrl: this.$store.state.baseUrl,
-      bannerImage: BannerImage,
+      bannerImage: null,
     };
   },
   methods: {
@@ -54,10 +53,15 @@ export default {
       this.$router.push(`/detail/${id}`);
       // location.reload();
     },
+    async getBanner() {
+      let res = await this.axios.get(`${this.baseUrl}/config/index_banner/get`);
+      this.bannerImage = res.data.data;
+    },
   },
   created() {
     this.getMicroClass();
     console.log(`Filter`, FilterClass);
+    this.getBanner();
   },
 };
 </script>

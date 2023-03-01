@@ -6,8 +6,10 @@ const secret = "zyxzyx"; //token密钥
 const tokenExpiresTime = 1000 * 60 * 60 * 24 * 7; //token过期时间,毫秒为单位， 7天
 const { getPostData } = require("../utils/index");
 const defaultAvatar = require("../utils/defaultAvatar");
+const { isSameDay } = require("../utils/index")
 const { wss } = require("../ws")
 module.exports = {
+
   checkToken(req, res, next) {
     const { token } = req.query;
     let decodeToken = jwt.decode(token, secret);

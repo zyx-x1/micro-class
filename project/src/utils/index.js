@@ -23,7 +23,6 @@ export const getVideoCover = (url) => {
     video.setAttribute('width', 400);
     video.setAttribute('height', 240);
     video.setAttribute('muted', "muted");
-
     video.setAttribute('autoplay', 'autoplay');
     video.addEventListener('canplaythrough', function () {
       let canvas = document.createElement("canvas"),

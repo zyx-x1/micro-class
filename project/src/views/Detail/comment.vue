@@ -5,7 +5,7 @@
     <div class="comments">
       <div class="comment-head">评论 {{ this.commentCount }}</div>
 
-      <div class="comment-issue">
+      <div class="comment-issue" v-show="$store.state.loginCredentials.status">
         <div class="issue">
           <div class="avatar">
             <img :src="$store.state.loginCredentials.avatar" alt="" srcset="" />
@@ -47,11 +47,8 @@
                 "
                 style="
                   font-weight: normal;
-
                   font-size: 12px;
-
                   color: rgba(0, 0, 0, 0.5);
-
                   cursor: pointer;
                 "
                 @click="deleteComment('评论', i, null)"
@@ -154,7 +151,10 @@
               </div>
             </div>
 
-            <div class="reply" v-show="v._is_reply">
+            <div
+              class="reply"
+              v-show="v._is_reply && $store.state.loginCredentials.status"
+            >
               <div class="avatar">
                 <img
                   :src="$store.state.loginCredentials.avatar"
@@ -162,6 +162,7 @@
                   srcset=""
                 />
               </div>
+              
 
               <div class="reply-inner">
                 <el-input
@@ -337,9 +338,9 @@ export default {
           });
         });
     },
-    deliverCount(){
-      return this.commentCount
-    }
+    deliverCount() {
+      return this.commentCount;
+    },
   },
   created() {
     this.getComments();

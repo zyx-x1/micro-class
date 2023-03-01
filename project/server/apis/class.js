@@ -7,30 +7,48 @@ module.exports = {
     let id = req.query.id;
     let sql = !id ? sqlMap.getClass : sqlMap.getClassById;
     let insertData = !!id ? [id] : [currPage, pageSize];
-    let data = await db(sql, insertData);
-    return res.json({
-      status: "success",
-      data,
+    let datas = await db(sql, insertData);
+    datas.forEach(async (data, index) => {
+      let userid = data.creator_id
+      let searchUserSql = `select avatar,username from user where id=?`
+      let fileid = data.file_id
+      let _file = null
+      if (!!fileid) {
+        let file = await db(`select * from micro_class_file where id=?`, [fileid])
+        _file = file[0]
+      }
+      data._file = _file
+      let userInfo = await db(searchUserSql, [userid])
+      data._user = userInfo[0]
+      if (datas.length == index + 1) {
+        return res.json({
+          status: "success",
+          data: datas
+        })
+      }
     });
   },
   async updateClassPlayCount(req, res, next) {
     let { id, count } = req.query;
+    id = parseInt(id)
+    count = parseInt(count)
     let sql = sqlMap.updateClassPlayCount;
+    console.log(`[count, id]`, [count, id]);
     let data = await db(sql, [count, id]);
-    let newCount = await db(`select play_count from micro_class where id=?`, [
-      id,
-    ]);
+    newCount = count
     return res.json({
       status: "success",
-      count: newCount[0],
+      count: newCount,
     });
   },
   async getClassLikeCollection(req, res, next) {
     let { id, email } = req.query;
+    console.log(parseInt(id));
     let sql_like = `select * from user_like where class_id = ?`;
     let sql_collection = `select * from user_collection where class_id = ?`;
-    let likeRes = await db(sql_like, [id]);
-    let collectionRes = await db(sql_collection, [id]);
+    let likeRes = await db(sql_like, [parseInt(id)]);
+    console.log(likeRes);
+    let collectionRes = await db(sql_collection, [parseInt(id)]);
     let isUserCollection = !!collectionRes.filter((el) => {
       return el.user_email == email;
     }).length;
@@ -77,7 +95,7 @@ module.exports = {
   },
   async searchClass(req, res, next) {
     let { key, page_size, curr_page } = req.query
-    let sql = `select * from micro_class where title like ?`
+    let sql = `select * from micro_class where title like ? and audit_status='pass'`
     let params = [`%${decodeURI(key)}%`]
     let result = await db(sql, params)
     let total = result.length
@@ -91,27 +109,28 @@ module.exports = {
     });
   },
   async getAssociatedClass(req, res, next) {
-    let { knowledge_information } = req.query
+    let { knowledge_information, classId } = req.query
     let tags = knowledge_information.split("|")
-    let sql = `select * from micro_class where knowledge_information like ?`
-    let result = []
-    tags.forEach(async (el, index) => {
-      let data = await db(sql, [`%${el}%`])
-      result.push(...data)
-      if (index == tags.length - 1) {
-        result = Array.from(new Set(result.map(item => JSON.stringify(item)))).map(item => JSON.parse(item))
-        result = result.length > 8 ? result.slice(0, 8) : result
-        return res.json({
-          status: "success",
-          data: result,
-          total: result.length
-        })
+    let sql = `select * from micro_class where knowledge_information like`
+    tags.forEach((tag, index) => {
+      tag = `"%${tag}%"`
+      if (index == 0) {
+        sql += ` ${tag}`
+      } else {
+        sql += ` or knowledge_information like ${tag}`
       }
+    })
+    let result = await db(sql, [parseInt(classId)])
+    result = result.filter(el => el.id != classId)
+    return res.json({
+      status: "success",
+      data: result,
+      total: result.length
     })
 
   },
   async getCommendClass(req, res, next) {
-    let sql = `select * from micro_class order by concat(collection,class_like,play_count) desc limit 0,10`
+    let sql = `select * from micro_class where audit_status='pass' order by concat(collection,class_like,play_count) desc limit 0,10`
     let result = await db(sql)
     return res.json({
       status: "success",
@@ -124,7 +143,7 @@ module.exports = {
     let get_classid_sql = `select class_id from user_collection where user_email = ?`
     let classIdRes = await db(get_classid_sql, [user_email])
     let classIds = classIdRes.map(el => el.class_id)
-    let sql = `select * from micro_class where id in (${classIds.join(",")})`
+    let sql = `select * from micro_class where id in (${classIds.join(",")}) and audit_status='pass'`
     let data = await db(sql)
     return res.json({
       status: "success",
@@ -151,7 +170,7 @@ module.exports = {
       },
     ]
     // 小学
-    let elementarySql = `select knowledge_information from micro_class where knowledge_information like "%小学%"`
+    let elementarySql = `select knowledge_information from micro_class where knowledge_information like "%小学%" and audit_status='pass'`
     let elementarys = await db(elementarySql)
     elementarys = [...new Set(elementarys.map(el => el.knowledge_information.split("|")[0].replace("小学", "")))]
     data[0].children = elementarys.map(el => {
@@ -162,7 +181,7 @@ module.exports = {
       return el
     })
     // 初中
-    let middleSql = `select knowledge_information from micro_class where knowledge_information like "%初中%"`
+    let middleSql = `select knowledge_information from micro_class where knowledge_information like "%初中%" and audit_status='pass'`
     let middles = await db(middleSql)
     middles = [...new Set(middles.map(el => el.knowledge_information.split("|")[0].replace("初中", "")))]
     data[1].children = middles.map(el => {
@@ -173,7 +192,7 @@ module.exports = {
       return el
     })
     // 高中
-    let highSql = `select knowledge_information from micro_class where knowledge_information like "%高中%"`
+    let highSql = `select knowledge_information from micro_class where knowledge_information like "%高中%" and audit_status='pass'`
     let highs = await db(highSql)
     highs = [...new Set(highs.map(el => el.knowledge_information.split("|")[0].replace("高中", "")))]
     data[2].children = highs.map(el => {
@@ -190,9 +209,9 @@ module.exports = {
   },
   async filterSubjectClass(req, res, next) {
     let { subject, page_size, curr_page } = req.query
-    let sql = `select * from micro_class where knowledge_information like ? order by upload_time desc limit ?,?`
+    let sql = `select * from micro_class where knowledge_information like ? and audit_status='pass' order by upload_time desc limit ?,?`
     let result = await db(sql, [`%${subject}%`, (curr_page - 1) * page_size, parseInt(page_size)])
-    let totalSql = `select count(id) from micro_class where knowledge_information like ? order by upload_time desc`
+    let totalSql = `select count(id) from micro_class where knowledge_information like ? and audit_status='pass' order by upload_time desc`
     let totalResult = await db(totalSql, [`%${subject}%`])
     return res.json({
       status: "success",
@@ -202,9 +221,9 @@ module.exports = {
   },
   async getNewClass(req, res, next) {
     let { page_size, curr_page } = req.query
-    let totalSql = `select count(id) from micro_class order by upload_time desc`
+    let totalSql = `select count(id) from micro_class where audit_status='pass' order by upload_time desc`
     let totalResult = await db(totalSql)
-    let sql = `select * from micro_class order by upload_time desc limit ?,?`
+    let sql = `select * from micro_class where audit_status='pass' order by upload_time desc limit ?,?`
     let result = await db(sql, [(curr_page - 1) * page_size, parseInt(page_size)])
     return res.json({
       status: "success",
@@ -214,9 +233,9 @@ module.exports = {
   },
   async getClassForCreator(req, res, next) {
     let { id, page_size, curr_page } = req.query
-    let totalSql = `select count(id) from micro_class where creator_id=?`
+    let totalSql = `select count(id) from micro_class where creator_id=? and audit_status='pass'`
     let totalResult = await db(totalSql, [id])
-    let sql = `select * from micro_class  where creator_id=? order by upload_time desc limit ?,?`
+    let sql = `select * from micro_class  where creator_id=? and audit_status='pass' order by upload_time desc limit ?,?`
     let result = await db(sql, [id, (curr_page - 1) * page_size, parseInt(page_size)])
     return res.json({
       status: "success",

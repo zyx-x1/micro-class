@@ -7,7 +7,7 @@
           <div class="title-info">
             <span class="play-count"
               ><i class="el-icon-video-play"></i>
-              {{ this.classData.play_count }}
+              {{ classData.play_count }}
             </span>
             <span class="comment-count">
               <i class="el-icon-chat-line-square"></i>
@@ -25,6 +25,7 @@
             :src="this.classData.video_src"
             controls
             controlslist="nodownload"
+            @contextmenu="stopDefaultEvent($event)"
           ></video>
         </div>
         <div class="operation">
@@ -60,6 +61,16 @@
           </div>
         </div>
         <!-- 标签 -->
+        <div
+          class="file"
+          style="text-align: left; margin-top: 20px; user-select: none"
+        >
+          <div class="file-name">
+            附件 :{{
+              !!this.classData._file ? this.classData._file.filename : "无"
+            }}
+          </div>
+        </div>
         <div class="tags">
           <span
             class="tag"
@@ -87,11 +98,16 @@
               />
             </div>
             <div class="info">
-              <div class="class-title" @click="toNewDetail(v.id)">
-                {{ v.title }}
+              <div class="top">
+                <div class="class-title" @click="toNewDetail(v.id)">
+                  {{ v.title }}
+                </div>
+                <div class="author">
+                  {{ v.author_name }}
+                </div>
               </div>
-              <div class="author">
-                {{ v.author_name }}
+              <div class="bottom">
+                {{ v.upload_time }}
               </div>
             </div>
           </div>
@@ -140,6 +156,9 @@ export default {
     isNum(param) {
       return !!param ? parseInt(param) : 0;
     },
+    stopDefaultEvent(e) {
+      e.preventDefault();
+    },
     async getMicroClass(id) {
       let res = await this.axios.get(`${this.baseUrl}/class/get`, {
         params: {
@@ -149,12 +168,12 @@ export default {
       this.classData = res.data.data[0];
       this.data = res.data.data;
       this.classData.upload_time = formatTime(this.classData.upload_time);
-      this.classData.play_count = this.isNum(this.classData.play_count);
       this.classData.like = this.isNum(this.classData.like);
       this.classData.collection = this.isNum(this.classData.collection);
       this.increasePlayCount();
       this.getLCCount(id);
       this.getAssociatedClass();
+      console.log(res);
     },
     async increasePlayCount() {
       // 进入页面时增加微课播放次数
@@ -238,11 +257,15 @@ export default {
       let res = await this.axios.get(`${this.baseUrl}/class/associated/get`, {
         params: {
           knowledge_information: this.classData.knowledge_information,
+          classId: this.classId
         },
       });
       // console.log(`res ->`, res);
       if (res.data.status == "success") {
-        this.associatedClasses = res.data.data;
+        this.associatedClasses = res.data.data.map((el) => {
+          el.upload_time = formatTime(el.upload_time);
+          return el;
+        });
       }
     },
     setRightHeight() {
@@ -353,7 +376,7 @@ export default {
         width: 100%;
         display: flex;
         margin: 10px 0;
-
+        flex-wrap: wrap;
         .tag {
           background-color: #f1f2f3;
           margin: 5px;
@@ -436,7 +459,9 @@ export default {
             width: 50%;
             text-align: left;
             padding: 0 20px;
-
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             .class-title {
               font-weight: bold;
               cursor: pointer;
@@ -448,6 +473,10 @@ export default {
 
             .author {
               margin-top: 20px;
+            }
+            .bottom {
+              color: rgba(51, 51, 51, 0.5);
+              cursor: default;
             }
           }
         }

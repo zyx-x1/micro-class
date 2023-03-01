@@ -1,6 +1,6 @@
 <template>
   <div id="usercenter">
-    <div id="inside_banner">
+    <div id="inside_banner" :style="{ '--banner': `url(${bannerImage})` }">
       <div id="user_info">
         <div class="avatar">
           <img
@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       hoverAvatar: false,
+      bannerImage: null,
     };
   },
   components: {
@@ -45,9 +46,16 @@ export default {
       let status = this.$store.state.loginCredentials.status;
       if (!status) this.$router.push("/login");
     },
+    async getBanner() {
+      let res = await this.axios.get(
+        `${this.$store.state.baseUrl}/config/subpage_banner/get`
+      );
+      this.bannerImage = res.data.data;
+    },
   },
   mounted() {
     this.checkLogin();
+    this.getBanner();
   },
 };
 </script>
@@ -75,7 +83,7 @@ export default {
     width: 100vw;
     background-size: cover;
     background-position: center;
-    background-image: url(../../../static/images/sky.png);
+    background-image: var(--banner);
     overflow: hidden;
     position: relative;
 

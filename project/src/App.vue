@@ -49,9 +49,74 @@ export default {
         this.$store.state.loginCredentials
       );
     },
+    async sendVisitor() {
+      let visitorId = localStorage.getItem("visitorId");
+      if (!this.$store.state.loginCredentials.status) {
+        if (!visitorId) {
+          if (!this.$store.state.loginCredentials.status) {
+            this.setVisitorId();
+          }
+        }
+        let date = new Date();
+        date.setTime(new Date(parseInt(visitorId.split("-")[1])));
+        let is_same_day = this.isSameDay(new Date(), date);
+        if (!is_same_day) {
+          this.setVisitorId();
+          await this.axios.post(
+            `${this.baseUrl}/visitor/send`,
+            {
+              date: new Date(),
+              visitor_type: "visitor",
+              visitor_id: localStorage.getItem("visitorId"),
+            },
+            {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            }
+          );
+        }
+      } else {
+        await this.axios.post(
+          `${this.baseUrl}/visitor/send`,
+          {
+            date: new Date(),
+            visitor_type: "user",
+            user_id: this.$store.state.loginCredentials.id,
+          },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+      }
+    },
+    isSameDay(dateObj1, dateObj2) {
+      let year1 = dateObj1.getYear(),
+        month1 = dateObj1.getMonth(),
+        date1 = dateObj1.getDate();
+      let year2 = dateObj2.getYear(),
+        month2 = dateObj2.getMonth(),
+        date2 = dateObj2.getDate();
+      return year1 == year2 && month1 == month2 && date1 == date2;
+    },
+    setVisitorId() {
+      let visitorId =
+        (Math.random() * 10000).toString(16).split(".")[1] +
+        "-" +
+        new Date().getTime();
+      localStorage.setItem("visitorId", visitorId);
+    },
   },
   created() {
     this.checkLogin();
+  },
+  watch: {
+    $route() {
+      console.log(`route change`);
+      this.sendVisitor();
+    },
   },
 };
 </script>
@@ -81,4 +146,5 @@ export default {
       color: #42b983;
     }
   }
-}</style>
+}
+</style>

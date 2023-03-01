@@ -53,7 +53,7 @@ const migrationToMicroTable = (data) => {
     microClassContentDescription,
     videoCover,
   ]);
-    db(insertSql, [
+  db(insertSql, [
     videoSrc,
     microClassTitle,
     authorAvatar,
