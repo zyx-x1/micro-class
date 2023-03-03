@@ -135,6 +135,11 @@ router.get("/class/new/get", (req, res, next) => {
 router.get("/class/creator/get", (req, res, next) => {
   classApi.getClassForCreator(req, res, next);
 });
+
+
+router.get("/class/file/download", (req, res, next) => {
+  classApi.downloadFile(req, res, next);
+});
 // 评论
 router.get("/comment/get", (req, res, next) => {
   commentApi.getComment(req, res, next);

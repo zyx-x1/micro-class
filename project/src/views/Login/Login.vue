@@ -126,6 +126,8 @@ export default {
               email: result.data.resData.email,
               usernameUpdateTime: result.data.resData.username_updatetime,
               loginTime: new Date(),
+        credits: result.data.resData.credits,
+
             });
             this.$message({
               message: "登录成功！",

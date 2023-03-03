@@ -43,6 +43,7 @@ export default {
         email: res.data.user.email,
         usernameUpdateTime: res.data.user.username_updatetime,
         loginTime: new Date(),
+        credits: res.data.user.credits,
       });
       console.log(
         `APP this.$store.state.loginCredentials`,

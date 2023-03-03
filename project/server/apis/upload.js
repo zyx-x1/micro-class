@@ -13,9 +13,9 @@ module.exports = {
         let videoSrc = `http://localhost:3000/${file.name}`
     },
     async submitUpload(req, res, next) {
-        let { fileName, file, fileType, author_name, author_avatar, author_area, author_school, author_intro, class_title, class_intro, class_type, class_level, knowladge_tags, chapter_tags, cover_image, video_src ,creator_id} = req.body
-        let annexSql = `insert into micro_class_file (filename,file,filetype) values (?,?,?)`
-        let annexResult = await db(annexSql, [fileName, file, fileType])
+        let { fileName, file, fileCredits, fileType, author_name, author_avatar, author_area, author_school, author_intro, class_title, class_intro, class_type, class_level, knowladge_tags, chapter_tags, cover_image, video_src, creator_id } = req.body
+        let annexSql = `insert into micro_class_file (filename,file,filetype,credits) values (?,?,?,?)`
+        let annexResult = await db(annexSql, [fileName, file, parseInt(fileCredits), fileType])
         let sql = `insert into micro_class (video_src,title,author_avatar,author_name,author_identity,author_area,author_school,author_introduce,upload_time,knowledge_information,chapter_information,type,level,content_description,class_like,collection,cover_image,audit_status,file_id,creator_id) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) `
         let params = [
             video_src,

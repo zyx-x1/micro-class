@@ -63,12 +63,22 @@
         <!-- 标签 -->
         <div
           class="file"
-          style="text-align: left; margin-top: 20px; user-select: none"
+          style="
+            text-align: left;
+            margin-top: 20px;
+            user-select: none;
+            display: flex;
+            line-height: 40px;
+          "
         >
-          <div class="file-name">
-            附件 :{{
-              !!this.classData._file ? this.classData._file.filename : "无"
-            }}
+          <div class="file-name" style="margin-right: 20px">
+            附件 :
+            {{ !!this.classData._file ? this.classData._file.filename : "无" }}
+          </div>
+          <div class="file-download">
+            <el-button @click="openDownloadFile">
+              <i class="el-icon-download"></i> 下载附件</el-button
+            >
           </div>
         </div>
         <div class="tags">
@@ -115,6 +125,46 @@
       </div>
     </div>
     <div id="foot"></div>
+    <el-dialog
+      title="提示"
+      :visible.sync="creditsDialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <span style="line-height: 2; cursor: default"
+        >下载此附件需要{{
+          !!classData._file ? classData._file.credits : 0
+        }}积分，您当前剩余{{ $store.state.loginCredentials.credits }}积分
+        <span
+          style="color: brown"
+          v-show="
+            (!!classData._file ? classData._file.credits : 0) >
+            $store.state.loginCredentials.credits
+          "
+        >
+          <br />
+          积分不足，无法下载！</span
+        >
+        <span
+          style="color: green"
+          v-show="
+            (!!classData._file ? classData._file.credits : 0) <=
+            $store.state.loginCredentials.credits
+          "
+        >
+          <br />
+          下载后会扣除{{
+            !!classData._file ? classData._file.credits : 0
+          }}积分，是否确认下载？</span
+        >
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="creditsDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmDownloadAnnex()"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -144,6 +194,7 @@ export default {
       likeCount: 0,
       collectionCount: 0,
       associatedClasses: [],
+      creditsDialogVisible: false,
     };
   },
   methods: {
@@ -155,6 +206,10 @@ export default {
     },
     isNum(param) {
       return !!param ? parseInt(param) : 0;
+    },
+    openDownloadFile() {
+      console.log(this.$store.state.loginCredentials.credits);
+      this.creditsDialogVisible = true;
     },
     stopDefaultEvent(e) {
       e.preventDefault();
@@ -249,15 +304,15 @@ export default {
     },
     open() {},
     tagSearch(tag) {
-      this.$router.push(`/search?search_txt=${tag}`);
-      location.reload();
+      // this.$router.push(`/search?search_txt=${tag}`);
+      // location.reload();
     },
     // 获取相关视频
     async getAssociatedClass() {
       let res = await this.axios.get(`${this.baseUrl}/class/associated/get`, {
         params: {
           knowledge_information: this.classData.knowledge_information,
-          classId: this.classId
+          classId: this.classId,
         },
       });
       // console.log(`res ->`, res);
@@ -277,6 +332,67 @@ export default {
       this.$router.push(`/detail/${id}`);
       location.reload();
     },
+    async confirmDownloadAnnex() {
+      this.creditsDialogVisible = false;
+      if (
+        this.classData._file.credits >
+        this.$store.state.loginCredentials.credits
+      ) {
+        return;
+      }
+      let res = await this.axios.get(`${this.baseUrl}/class/file/download`, {
+        params: {
+          classId: this.classId,
+          fileId: this.classData.file_id,
+          userId: this.$store.state.loginCredentials.id,
+          userCredits: this.$store.state.loginCredentials.credits,
+          fileCredits: this.classData._file.credits,
+        },
+      });
+      if (res.data.status == "success") {
+        this.$message({
+          type: "success",
+          message: "已开始下载...",
+        });
+        let userCredits = res.data.data.userCredits;
+        let loginCredentials = this.$store.state.loginCredentials;
+        loginCredentials.credits = userCredits;
+        this.$store.commit("setLoginCredentials", loginCredentials);
+        this.downloadFileByBase64(
+          this.classData._file.file,
+          this.classData._file.filename
+        );
+      }
+    },
+    dataURLtoBlob(dataurl) {
+      let arr = dataurl.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    },
+
+    downloadFile(url, name) {
+      let a = document.createElement("a");
+      a.setAttribute("href", url);
+      a.setAttribute("download", name);
+      a.setAttribute("target", "_blank");
+      let clickEvent = document.createEvent("MouseEvents");
+      clickEvent.initEvent("click", true, true);
+      a.dispatchEvent(clickEvent);
+    },
+
+    downloadFileByBase64(base64, name) {
+      let myBlob = this.dataURLtoBlob(base64);
+      let myUrl = URL.createObjectURL(myBlob);
+      this.downloadFile(myUrl, name);
+    },
+
+    handleClose() {},
   },
   mounted() {
     this.getClassId();

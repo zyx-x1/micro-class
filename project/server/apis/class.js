@@ -242,5 +242,16 @@ module.exports = {
       data: result,
       total: totalResult[0]['count(id)']
     })
+  },
+  async downloadFile(req, res, next) {
+    let { classId, fileId, userId, userCredits, fileCredits } = req.query
+    let sql = `update user set credits=? where id=?`
+    let result = await db(sql, [userCredits - fileCredits, parseInt(userId)])
+    return res.json({
+      status: "success",
+      data: {
+        userCredits: userCredits - fileCredits
+      }
+    })
   }
 }   

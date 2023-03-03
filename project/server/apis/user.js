@@ -18,7 +18,7 @@ module.exports = {
         return res.json({ status: "fail", msg: "token超时，请重新登录！" });
       } else {
         db(
-          `select username,avatar,email,username_updatetime,id from user where email="${decodeToken.email}"`
+          `select username,avatar,email,username_updatetime,id,credits from user where email="${decodeToken.email}"`
         )
           .then((user) => {
             return res.json({
@@ -114,7 +114,7 @@ module.exports = {
             };
             let token = jwt.sign(payload, secret);
             db(
-              `select username,avatar,email,id,username_updatetime from user where email="${req.query.email}"`
+              `select username,avatar,email,id,username_updatetime,credits from user where email="${req.query.email}"`
             )
               .then((resData) => {
                 return res.json({
@@ -133,7 +133,6 @@ module.exports = {
   },
   register(req, res, next) {
     let insertData = Object.values(req.query);
-    console.log(insertData);
     let sql = sqlMap.getUser;
     let [username, email, password, signuptime, avatar] = insertData;
     avatar = defaultAvatar.defaultAvatar;
@@ -153,6 +152,8 @@ module.exports = {
           new Date(signuptime),
           avatar,
           new Date(),
+          "user",
+          20
         ];
         db(insertUserSql, insertParams)
           .then(() => {

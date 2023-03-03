@@ -25,7 +25,7 @@
             上传附件 <span class="color-red">*</span>
             <i
               class="el-icon-warning-outline"
-              title="仅支持上传PDF文件
+              title="仅支持上传pptx文件
   文件大小限制为10MB
   当前仅支持上传一个附件"
               style="margin-left: 5px; font-size: 14px; line-height: 16px"
@@ -36,12 +36,12 @@
               type="file"
               class="class-annex"
               ref="annex"
-              accept=".pdf"
+              accept=".pptx"
               :style="{ '--annex': `url(${uploadAnnexIcon})` }"
               v-show="!annex.file"
               @change="uploadAnnex($event)"
             />
-            <div class="annex-name" @click="showPDF()">
+            <div class="annex-name">
               {{ annex.fileName }}
             </div>
             <div class="annex-remove" v-show="annex.file">
@@ -51,6 +51,10 @@
               ></i>
             </div>
           </div>
+        </div>
+        <div class="form-item">
+          <div class="label">附件下载积分 <span class="color-red">*</span></div>
+          <el-input v-model="annex.credits"></el-input>
         </div>
       </div>
       <div class="info">
@@ -268,6 +272,7 @@ export default {
         file: null,
         fileType: "",
         maxFileSize: 1024 * 1024 * 10,
+        credits: 0,
       },
       options: regionData,
       knowladgeTagFoucs: [],
@@ -281,6 +286,7 @@ export default {
     };
   },
   methods: {
+   
     removeAnnex() {
       this.annex = {
         fileName: "",
@@ -302,8 +308,11 @@ export default {
       let file = e.target.files[0];
 
       let fileType = file.type;
-      if (fileType !== "application/pdf") {
-        this.$message.error("请上传PDF文件！");
+      if (
+        fileType !==
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      ) {
+        this.$message.error("请上传pptx文件！");
         return;
       }
       let fileSize = file.size;
@@ -386,6 +395,7 @@ export default {
       );
       fd.append("fileName", this.annex.fileName);
       fd.append("file", this.annex.file);
+      fd.append("fileCredits", this.annex.credits);
       fd.append("fileType", this.annex.fileType);
       fd.append("author_area", data.authorArea);
       fd.append("author_school", this.info.authorSchool);
@@ -433,6 +443,10 @@ export default {
       }
       if (!this.annex.file) {
         this.$message.error("请上传附件！");
+        return false;
+      }
+      if (!this.annex.credits) {
+        this.$message.error("请设置附件积分！");
         return false;
       }
       if (!this.info.authorName) {

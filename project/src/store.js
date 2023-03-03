@@ -14,6 +14,7 @@ export default new Vuex.Store({
       loginTime: null,
       email: "",
       usernameUpdateTime: null,
+      credits: 0
     },
   },
   mutations: {
