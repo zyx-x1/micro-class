@@ -90,6 +90,14 @@ router.post("/user/avatar/update", (req, res, next) => {
 router.get("/user/avatar/get", (req, res, next) => {
   userApi.getAvatar(req, res, next);
 });
+
+router.get("/user/signin/retroactive", (req, res, next) => {
+  userApi.userRetroactive(req, res, next);
+});
+
+router.get("/user/signin/get", (req, res, next) => {
+  userApi.getUserSignin(req, res, next);
+});
 // 微课
 router.get("/class/get", (req, res, next) => {
   classApi.loadClass(req, res, next);

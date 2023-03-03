@@ -126,8 +126,7 @@ export default {
               email: result.data.resData.email,
               usernameUpdateTime: result.data.resData.username_updatetime,
               loginTime: new Date(),
-        credits: result.data.resData.credits,
-
+              credits: result.data.resData.credits,
             });
             this.$message({
               message: "登录成功！",
@@ -136,7 +135,6 @@ export default {
 
             setTimeout(() => {
               this.$router.push("/");
-              location.reload();
             }, 1500);
           }
         }
@@ -155,6 +153,9 @@ export default {
   },
   mounted() {
     this.$store.commit("starAnimeBackground", this.$refs.cvs);
+    if(this.$store.state.loginCredentials.status){
+      this.$router.push("/")
+    }
   },
 };
 </script>

@@ -272,5 +272,26 @@ module.exports = {
         data: result[0].avatar
       }
     );
+  },
+  async userRetroactive(req, res, next) {
+    let { userId, date, creditsValue } = req.query
+    let insertSignin = await db(`insert into signin (user_id,date) values (?,?)`, [parseInt(userId), new Date(date)])
+    let insertDeduct = await db(`insert into credits_details (user_id,description,type,change_type,credits_value,date) values (?,?,?,?,?,?)`, [parseInt(userId), 'signin', 'deduct', "补签扣除积分", parseInt(creditsValue), new Date()])
+    let insertAdd = await db(`insert into credits_details (user_id,description,type,change_type,credits_value,date) values (?,?,?,?,?,?)`, [parseInt(userId), 'signin', 'add', "签到增加积分", parseInt(creditsValue), new Date()])
+    return res.json(
+      {
+        status: "success",
+      }
+    );
+  },
+  async getUserSignin(req, res, next) {
+    let { userId } = req.query
+    let result = await db(`select date from signin where user_id=?`, [parseInt(userId)])
+    return res.json(
+      {
+        status: "success",
+        data: result.map(el => el.date)
+      }
+    );
   }
 };

@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     baseUrl: "http://localhost:3000",
+    signinCreditsValue: 5,
     // 登录凭证
     loginCredentials: {
       status: false,

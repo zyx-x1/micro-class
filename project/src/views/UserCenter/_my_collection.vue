@@ -1,4 +1,5 @@
 <template>
+  <!-- 我的收藏 -->
   <div id="root">
     <el-empty
       v-if="data.length == 0"

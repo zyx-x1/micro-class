@@ -9,6 +9,13 @@
           >
           <MyVideo v-if="activeName == 'my_video'" />
         </el-tab-pane>
+        <el-tab-pane label="我的积分" name="my_credits">
+          <span slot="label">
+            <i class="el-icon-coin"></i>
+            我的积分</span
+          >
+          <MyCredits v-if="activeName == 'my_credits'" />
+        </el-tab-pane>
         <el-tab-pane label="我的收藏" name="my_collection">
           <span slot="label">
             <i class="el-icon-collection-tag"></i> 我的收藏</span
@@ -44,8 +51,9 @@
 import MyVideo from "./_my_video.vue";
 import MyCollection from "./_my_collection.vue";
 import Setting from "./_setting.vue";
+import MyCredits from "./_my_credits.vue";
 export default {
-  components: { MyVideo, MyCollection, Setting },
+  components: { MyVideo, MyCollection, Setting, MyCredits },
   data() {
     return {
       activeName: "my_video",
