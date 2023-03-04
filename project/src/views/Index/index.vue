@@ -23,7 +23,7 @@
 
 <script>
 import { formatTime } from "../../utils/index";
-import Commend from "./commend";
+import Commend from "./Commend";
 import FilterClass from "./filter";
 import NewClass from "./new";
 import Foot from "../../components/foot/foot.vue";

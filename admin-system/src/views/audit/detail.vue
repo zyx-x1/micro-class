@@ -122,6 +122,8 @@ export default {
               params: {
                 status: "pass",
                 id: this.id,
+                creatorId: this.data.creator_id,
+                adminName: this.$store.state.loginCredentials.username,
                 admin: this.$store.state.loginCredentials.id,
               },
             }

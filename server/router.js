@@ -4,47 +4,52 @@ const api = require("./apis/index");
 const userApi = require("./apis/user");
 const classApi = require("./apis/class");
 const commentApi = require("./apis/comment");
-const messageApi = require("./apis/message")
-const uploadApi = require("./apis/upload")
-const adminApi = require("./apis/admin")
-const configApi = require("./apis/config")
+const messageApi = require("./apis/message");
+const uploadApi = require("./apis/upload");
+const adminApi = require("./apis/admin");
+const configApi = require("./apis/config");
 
 //管理
 
 router.get("/admin/login", (req, res, next) => {
   adminApi.adminLogin(req, res, next);
-})
+});
 
 router.get("/admin/token/check", (req, res, next) => {
   adminApi.checkToken(req, res, next);
-})
+});
 router.post("/visitor/send", (req, res, next) => {
   adminApi.setVisitor(req, res, next);
-})
+});
 
 router.get("/visitor/get", (req, res, next) => {
   adminApi.getVisitor(req, res, next);
-})
+});
 
 router.get("/admin/userinfo/get", (req, res, next) => {
   adminApi.getUserInfo(req, res, next);
-})
+});
 
 router.get("/admin/audit/get", (req, res, next) => {
   adminApi.getAudit(req, res, next);
-})
+});
 
 router.get("/admin/audit/submit", (req, res, next) => {
   adminApi.submitAudit(req, res, next);
-})
+});
 
 router.get("/admin/config/get", (req, res, next) => {
   adminApi.getConfig(req, res, next);
-})
+});
 
 router.post("/admin/config/update", (req, res, next) => {
   adminApi.updateConfig(req, res, next);
-})
+});
+
+router.get("/admin/downloadrecord/get", (req, res, next) => {
+  adminApi.getDownloadRecord(req, res, next);
+});
+
 // 用户
 router.get("/load", (req, res, next) => {
   userApi.loader(req, res, next);
@@ -98,6 +103,10 @@ router.get("/user/signin/retroactive", (req, res, next) => {
 router.get("/user/signin/get", (req, res, next) => {
   userApi.getUserSignin(req, res, next);
 });
+
+router.get("/user/credits/detail/get", (req, res, next) => {
+  userApi.getUserCreditsDetails(req, res, next);
+});
 // 微课
 router.get("/class/get", (req, res, next) => {
   classApi.loadClass(req, res, next);
@@ -144,7 +153,6 @@ router.get("/class/creator/get", (req, res, next) => {
   classApi.getClassForCreator(req, res, next);
 });
 
-
 router.get("/class/file/download", (req, res, next) => {
   classApi.downloadFile(req, res, next);
 });
@@ -162,34 +170,34 @@ router.get("/comment/delete", (req, res, next) => {
 // 消息
 router.get("/message/count", (req, res, next) => {
   messageApi.countMessage(req, res, next);
-})
+});
 router.get("/message/get", (req, res, next) => {
   messageApi.getMessages(req, res, next);
-})
+});
 router.get("/message/read", (req, res, next) => {
   messageApi.readMessage(req, res, next);
-})
+});
 // 投稿
 router.post("/video/upload", (req, res, next) => {
   uploadApi.upload(req, res, next);
-})
+});
 router.post("/upload/submit", (req, res, next) => {
   uploadApi.submitUpload(req, res, next);
-})
+});
 //配置
 router.get("/config/index_banner/get", (req, res, next) => {
   configApi.getIndexBanner(req, res, next);
-})
+});
 
 router.get("/config/subpage_banner/get", (req, res, next) => {
   configApi.getSubpageBanner(req, res, next);
-})
+});
 
 router.get("/config/openai/get", (req, res, next) => {
   configApi.getOpenaiConfig(req, res, next);
-})
+});
 
 router.get("/config/default_avatar/get", (req, res, next) => {
   configApi.getDefaultAvatar(req, res, next);
-})
+});
 module.exports = router;

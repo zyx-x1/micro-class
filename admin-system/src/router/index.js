@@ -42,6 +42,11 @@ const routes = [
         path: '/config',
         name: 'mainConfig',
         component: () => import('../views/config/config.vue'),
+      },
+      {
+        path: '/downloadrecord',
+        name: 'mainDownloadrecord',
+        component: () => import('../views/annex_download/annex_download.vue'),
       }
     ]
   },

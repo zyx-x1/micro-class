@@ -19,7 +19,7 @@ module.exports = {
     },
     async countMessage(req, res, next) {
         let { user } = req.query
-        let sql = `select id from message where is_read is null and receiver_email=?`
+        let sql = `select id from message where is_read is null  and receiver_email=?`
         let result = await db(sql, [user])
 
         return res.json({

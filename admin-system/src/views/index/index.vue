@@ -23,7 +23,7 @@
     <div id="echart" ref="echart"></div>
   </div>
 </template>
-  
+
 <script>
 import * as echarts from "echarts";
 export default {
@@ -197,7 +197,7 @@ export default {
   mounted() {},
 };
 </script>
-  
+
 <style lang="less">
 #view {
   .head {
@@ -205,8 +205,17 @@ export default {
     margin: 20px auto 50px;
     display: flex;
     justify-content: space-between;
+    @media (max-width: 1920px) {
+      .baseinfo {
+        width: 22%;
+      }
+    }
+    @media (min-width: 1920px) {
+      .baseinfo {
+        width: 251px;
+      }
+    }
     .baseinfo {
-      width: 251px;
       height: 100px;
       padding: 10px;
       border-radius: 15px;
@@ -239,8 +248,17 @@ export default {
   }
   #echart {
     width: 100%;
-    height: calc(100% - 500px);
     margin: 20px auto;
+  }
+  @media (min-width: 1920px) {
+    #echart {
+      height: calc(100% - 500px);
+    }
+  }
+  @media (max-width: 1920px) {
+    #echart {
+      height: calc(100% - 200px);
+    }
   }
 }
 </style>

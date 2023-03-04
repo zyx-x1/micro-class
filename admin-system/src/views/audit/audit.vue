@@ -5,13 +5,13 @@
       style="width: 100%"
       :default-sort="{ prop: 'date', order: 'descending' }"
     >
-      <el-table-column prop="id" label="id" sortable width="180">
+      <el-table-column prop="id" label="id" sortable width="60">
       </el-table-column>
       <el-table-column prop="title" label="标题" sortable width="180">
       </el-table-column>
-      <el-table-column prop="upload_time" label="上传时间" sortable width="180">
+      <el-table-column prop="upload_time" label="上传时间" sortable width="150">
       </el-table-column>
-      <el-table-column align="center" label="投稿人">
+      <el-table-column align="center" label="投稿人" width="150">
         <template slot-scope="scope">
           <div class="creator">
             <img
@@ -25,13 +25,13 @@
                 background-position: center;
               "
             />
-            <span style="line-height: 120px">{{
+            <span style="">{{
               !!scope.row._user ? scope.row._user.username : null
             }}</span>
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="作者">
+      <el-table-column align="center" width="150" label="作者">
         <template slot-scope="scope">
           <div class="creator">
             <img
@@ -45,7 +45,7 @@
                 background-position: center;
               "
             />
-            <span style="line-height: 200px">{{ scope.row.author_name }}</span>
+            <span style="">{{ scope.row.author_name }}</span>
           </div>
         </template>
       </el-table-column>
@@ -55,10 +55,10 @@
         label="作者学校"
         align="center"
         sortable
-        width="180"
+        width="150"
       >
       </el-table-column>
-      <el-table-column align="center" label="视频">
+      <el-table-column align="center" label="视频" width="200">
         <template slot-scope="scope">
           <video
             id="play_container"
@@ -159,7 +159,7 @@ export default {
     },
     setPageSize() {
       this.$nextTick(() => {
-        let pageSize = parseInt((this.$refs.audit.offsetHeight - 190) / 200);
+        let pageSize = parseInt((this.$refs.audit.offsetHeight - 150) / 150);
         this.pager.page_size = pageSize;
         this.pageSizes = [pageSize, pageSize * 2, pageSize * 3];
       });

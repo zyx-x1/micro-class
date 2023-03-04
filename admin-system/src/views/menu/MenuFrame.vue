@@ -102,6 +102,12 @@ export default {
         },
         {
           index: 3,
+          label: "附件下载管理",
+          icon: "",
+          router: "downloadrecord",
+        },
+        {
+          index: 4,
           label: "网站资源配置",
           icon: "",
           router: "config",
@@ -242,7 +248,7 @@ export default {
       height: calc(100vh - 130px);
       padding: 20px;
       .el-table {
-        max-height: calc(100vh - 280px) !important;
+        max-height: calc(100vh - 220px) !important;
         overflow-y: auto;
         border: none !important;
       }

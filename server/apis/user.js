@@ -6,10 +6,9 @@ const secret = "zyxzyx"; //token密钥
 const tokenExpiresTime = 1000 * 60 * 60 * 24 * 7; //token过期时间,毫秒为单位， 7天
 const { getPostData } = require("../utils/index");
 const defaultAvatar = require("../utils/defaultAvatar");
-const { isSameDay } = require("../utils/index")
-const { wss } = require("../ws")
+const { isSameDay } = require("../utils/index");
+const { wss } = require("../ws");
 module.exports = {
-
   checkToken(req, res, next) {
     const { token } = req.query;
     let decodeToken = jwt.decode(token, secret);
@@ -153,7 +152,7 @@ module.exports = {
           avatar,
           new Date(),
           "user",
-          20
+          20,
         ];
         db(insertUserSql, insertParams)
           .then(() => {
@@ -248,50 +247,84 @@ module.exports = {
     });
   },
   async updateUserAvatar(req, res, next) {
-    let { userid, avatar } = req.body
-    let sql = `update user set avatar=? where id=?`
-    let params = [avatar, userid]
-    let result = await db(sql, params)
+    let { userid, avatar } = req.body;
+    let sql = `update user set avatar=? where id=?`;
+    let params = [avatar, userid];
+    let result = await db(sql, params);
     wss.clients.forEach((ws) => {
       ws.send(JSON.stringify({ msg: "avatar update" }));
     });
-    return res.json(
-      {
-        status: "success",
-        data: avatar
-      }
-    );
+    return res.json({
+      status: "success",
+      data: avatar,
+    });
   },
   async getAvatar(req, res, next) {
-    let { id } = req.query
-    let sql = `select avatar from user where id=?`
-    let result = await db(sql, [id])
-    return res.json(
-      {
-        status: "success",
-        data: result[0].avatar
-      }
-    );
+    let { id } = req.query;
+    let sql = `select avatar from user where id=?`;
+    let result = await db(sql, [id]);
+    return res.json({
+      status: "success",
+      data: result[0].avatar,
+    });
   },
   async userRetroactive(req, res, next) {
-    let { userId, date, creditsValue } = req.query
-    let insertSignin = await db(`insert into signin (user_id,date) values (?,?)`, [parseInt(userId), new Date(date)])
-    let insertDeduct = await db(`insert into credits_details (user_id,description,type,change_type,credits_value,date) values (?,?,?,?,?,?)`, [parseInt(userId), 'signin', 'deduct', "补签扣除积分", parseInt(creditsValue), new Date()])
-    let insertAdd = await db(`insert into credits_details (user_id,description,type,change_type,credits_value,date) values (?,?,?,?,?,?)`, [parseInt(userId), 'signin', 'add', "签到增加积分", parseInt(creditsValue), new Date()])
-    return res.json(
-      {
-        status: "success",
-      }
+    let { userId, date, creditsValue, consumptionCredits } = req.query;
+    await db(`update user set credits=? where id=?`, [
+      parseInt(userCredits) +
+        parseInt(creditsValue) -
+        parseInt(consumptionCredits),
+      parseInt(userId),
+    ]);
+    let insertSignin = await db(
+      `insert into signin (user_id,date) values (?,?)`,
+      [parseInt(userId), new Date(date)]
     );
+    let insertDeduct = await db(
+      `insert into credits_details (user_id,description,type,change_type,credits_value,date) values (?,?,?,?,?,?)`,
+      [
+        parseInt(userId),
+        "signin",
+        "deduct",
+        "补签扣除",
+        parseInt(consumptionCredits),
+        new Date(),
+      ]
+    );
+    let insertAdd = await db(
+      `insert into credits_details (user_id,description,type,change_type,credits_value,date) values (?,?,?,?,?,?)`,
+      [
+        parseInt(userId),
+        "signin",
+        "add",
+        "签到增加",
+        parseInt(creditsValue),
+        new Date(),
+      ]
+    );
+    return res.json({
+      status: "success",
+    });
   },
   async getUserSignin(req, res, next) {
-    let { userId } = req.query
-    let result = await db(`select date from signin where user_id=?`, [parseInt(userId)])
-    return res.json(
-      {
-        status: "success",
-        data: result.map(el => el.date)
-      }
+    let { userId } = req.query;
+    let result = await db(`select date from signin where user_id=?`, [
+      parseInt(userId),
+    ]);
+    return res.json({
+      status: "success",
+      data: result.map((el) => el.date),
+    });
+  },
+  async getUserCreditsDetails(req, res, next) {
+    let { userId } = req.query;
+    let result = await db(
+      `select * from credits_details where user_id=? order by date desc`,
+      [parseInt(userId)]
     );
-  }
+    return res.json({
+      status: "success",
+      data: result,
+    });
+  },
 };
