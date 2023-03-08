@@ -5,7 +5,8 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    baseUrl: "http://localhost:3000",
+    baseUrl: "http://47.113.150.244:3000",
+    webSocketUrl: "ws://47.113.150.244:8181",
     signinCreditsValue: 5,
     // 登录凭证
     loginCredentials: {
@@ -15,7 +16,7 @@ export default new Vuex.Store({
       loginTime: null,
       email: "",
       usernameUpdateTime: null,
-      credits: 0
+      credits: 0,
     },
   },
   mutations: {

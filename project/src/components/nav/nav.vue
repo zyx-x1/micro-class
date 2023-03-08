@@ -180,7 +180,7 @@ export default {
       this.getMessageCount();
     }, 50);
     const _this = this;
-    const ws = new WebSocket("ws://localhost:8181");
+    const ws = new WebSocket(this.$store.state.webSocketUrl);
     ws.onopen = function () {
       ws.onmessage = function (msg) {
         // msg = JSON.parse(msg);

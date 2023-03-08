@@ -162,7 +162,6 @@
                   srcset=""
                 />
               </div>
-              
 
               <div class="reply-inner">
                 <el-input
@@ -347,7 +346,7 @@ export default {
   },
   mounted() {
     let _this = this;
-    const ws = new WebSocket("ws://localhost:8181");
+    const ws = new WebSocket(this.$store.state.webSocketUrl);
     ws.onopen = function () {
       ws.onmessage = function (msg) {
         let data = JSON.parse(msg.data);
